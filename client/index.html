@@ -23,8 +23,36 @@
 		</div>
 		<div id="body"></div>
 			<h1>Test</h1>
-			<p>this is a test</p>
-			<p>updated name?</p>
+			<form id="testForm">
+			<input type="text" id="name" name="name">
+			<div id="radio-buttons">
+				<div class="radio-button">
+					<input type="radio" id="cat1" name="birads_class" value="cat1">
+					<label for="cat1">1</label>
+				</div>
+				<div class="radio-button">
+					<input type="radio" id="cat2" name="birads_class" value="cat2">
+					<label for="cat2">2</label>
+				</div>
+				<div class="radio-button">
+					<input type="radio" id="cat3" name="birads_class" value="cat3">
+					<label for="cat3">3</label>
+				</div>
+				<div class="radio-button">
+					<input type="radio" id="cat4" name="birads_class" value="cat4">
+					<label for="cat4">4</label>
+				</div>
+				<div class="radio-button">
+					<input type="radio" id="cat5" name="birads_class" value="cat5">
+					<label for="cat5">5</label>
+				</div>
+				<div class="radio-button">
+					<input type="radio" id="cat6" name="birads_class" value="cat6">
+					<label for="cat6">6</label>
+				</div>
+			</div>
+			</form>
+			<button id="testing_button" form="testForm" type="submit">Click here to send data</button>
 		</div>
 
 	</body>
