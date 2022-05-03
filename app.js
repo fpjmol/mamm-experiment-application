@@ -95,7 +95,7 @@ app.get('/register', (req, res) => {
 app.get('/generic_info', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id = req.cookies.participant_id
+        participant_id: req.cookies.participant_id
     }
     
     res.render('generic_info', page_data); // Possible error cause: participant_id = null
