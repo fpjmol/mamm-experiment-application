@@ -24,10 +24,10 @@ const mysql = require('mysql2');
 // SETTINGS FOR HEROKU DB:
 
 const db = mysql.createConnection({
-    user: 'b69c157586d645',
-    host: 'eu-cdbr-west-02.cleardb.net',
-    password: '0bc03ea5',
-    database: 'heroku_9fd274ebb37256e'
+    user: 'emr0lxlhgjmxblcg',
+    host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+    password: 'tyma6eiq0w7i3fna',
+    database: 'cg511cow0to6am6v'
 })
 
 // Supporting Variables -----------------------------------------
