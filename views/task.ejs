@@ -1,0 +1,124 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/task.css">
+		
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="/lib/task.js"></script>
+	</head>
+
+	<body>
+		
+		<!-- Injecting EJS variables into JS environment -->
+		<script> 
+			var participant_id = '<%= participant_id %>';
+			var participant_type = '<%= participant_type %>';
+			var task_id = parseInt('<%= task.id_task %>');
+			var classification_obj = JSON.parse('<%- JSON.stringify(classification)%>');
+
+			const PARTICIPANT_TYPES = JSON.parse('<%- JSON.stringify(PARTICIPANT_TYPES)%>');
+		</script>
+
+        <div id="body">
+
+			<h2 id="task_counter"><%= classification.finished.length + 1 %> / 3</h2>
+
+			<div id="mammograms">
+				<img class="mammogram" id="mamm_img" src="/img/mammograms/<%=task.mamm_file_name%>">
+				<img class="mammogram hidden" id="heatmap_img" src="/img/mammograms/<%=task.heat_file_name%>">
+			</div>
+
+			<div id="body_right">
+				<div id="patient_info">
+					<h3>Patient Information</h3>
+					<p><strong>Age:</strong> 62</p>
+					<p><strong>Family History:</strong> Genetic predisposition</p>
+				</div>
+
+				<button class="heatmap_button" id="show_heatmap_button">Show Heatmap</button>
+				<button class="heatmap_button hidden" id="hide_heatmap_button">Hide Heatmap</button>
+
+				<div class="info_component" id="AI_info">
+					<div class="info_content_wrapper">
+						<div class="info_content_box hidden" id="AI_info_box">
+							<p>This is where the AI info would be displayed</p>
+						</div>
+					</div>
+					<img class="info_icon" id="show_AI_info" src="/img/misc/info.png">
+				</div>
+			</div>
+        </div>
+		
+		<div id="classification_menu">
+
+			<div id="classification_menu_left">
+				<button class="show_ai_button " id="show_AI_button">Show AI suggestion</button>
+				
+				<div class="AI_suggestion hidden" id="AI_suggestion">
+					<div id="AI_suggestion_title_wrapper">
+						<h4>AI BIRADS Suggestion:</h4>
+						
+						<div class="info_component" id="PD_info">
+							<div class="info_content_wrapper">
+								<div class="info_content_box hidden" id="PD_info_box">
+									<p>This is where the Prob Distr info would be displayed</p>
+								</div>
+							</div>
+							<img class="info_icon" id="show_PD_info" src="/img/misc/info.png">
+						</div>
+					</div>	
+					<h5>li: <%= task.ai_classification.li%></h5>
+					<h5>re: <%= task.ai_classification.re%></h5>
+				</div>
+			</div>
+
+			<div id="classification_menu_mid">
+				<div id="classification_title_wrapper">
+					<h4>Give your classification:</h4>
+
+					<div class="info_component" id="BIRADS_info">
+						<div class="info_content_wrapper">
+							<div class="info_content_box hidden" id="BIRADS_info_box">
+								<p>This is where the birads info would be displayed</p>
+							</div>
+						</div>
+						<img class="info_icon" id="show_BIRADS_info" src="/img/misc/info.png">
+					</div>
+
+				</div>
+
+				<form id="birads_classification_form">
+					<div class="radio-button">
+						<input type="radio" id="cat1" name="birads_class" value="1" required>
+						<label for="cat1">1</label>
+					</div>
+					<div class="radio-button">
+						<input type="radio" id="cat2" name="birads_class" value="2">
+						<label for="cat2">2</label>
+					</div>
+					<div class="radio-button">
+						<input type="radio" id="cat3" name="birads_class" value="3">
+						<label for="cat3">3</label>
+					</div>
+					<div class="radio-button">
+						<input type="radio" id="cat4" name="birads_class" value="4">
+						<label for="cat4">4</label>
+					</div>
+					<div class="radio-button">
+						<input type="radio" id="cat5" name="birads_class" value="5">
+						<label for="cat5">5</label>
+					</div>
+					<div class="radio-button">
+						<input type="radio" id="cat6" name="birads_class" value="6">
+						<label for="cat6">6</label>
+					</div>
+				</form>
+			</div>
+
+			<div id="classification_menu_right"> 
+				<button id="task_submit_button" form="birads_classification_form">Submit answer & continue</button>
+			</div>
+		</div>
+	</body>
+</html>

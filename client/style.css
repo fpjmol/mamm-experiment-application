@@ -1,9 +1,0 @@
-#testing_button {
-    display: block;
-    background-color: black;
-    color: white;
-}
-
-#testing_button:hover {
-    cursor:pointer;
-}

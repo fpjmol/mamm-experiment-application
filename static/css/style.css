@@ -1,0 +1,17 @@
+body {
+    background-color: rgb(69,69,69);
+    margin:0;
+}
+
+#fake_button {
+    display: block;
+    height: 100px;
+    width: 100px;
+    background-color: black;
+}
+
+#fake_button:hover {
+    cursor: pointer;
+    background-color: grey;
+}
+

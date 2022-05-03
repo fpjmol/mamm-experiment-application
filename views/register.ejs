@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="/lib/register.js"></script>
+	</head>
+
+	<body>
+        <form id="control_form">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="control_profession">Profession:</label>
+            <select id="control_profession" name="control_profession" required>
+                <option value="" disabled selected>Select your option</option>
+                <option value="student_related">Student in a medical field related to radiology</option>
+                <option value="student_not_related">Student in a medical field not related to radiology</option>
+                <option value="radiologist">Radiologist</option>
+                <option value="medical_profession">Medical professional in a field other than radiology</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="control_exp_radiology">Experience in Radiology:</label>
+            <select id="control_exp_radiology" name="control_exp_radiology" required>
+                <option value="" disabled selected>Select your option</option>
+                <option value="no_experience">No experience</option>
+                <option value="less_than_1">Less than 1 year</option>
+                <option value="between_1_3">Between 1 and 3 years</option>
+                <option value="between_3_10">Between 3 and 10 years</option>
+                <option value="more_than_10">More than 10 years</option>
+            </select>
+
+            <label for="control_exp_mammography">Experience in Mammography:</label>
+            <select id="control_exp_mammography" name="control_exp_mammography" required>
+                <option value="" disabled selected>Select your option</option>
+                <option value="no_experience">No experience</option>
+                <option value="less_than_100">Less than 100 mammograms classified</option>
+                <option value="between_100_1000">Between 100 and 1000 mammograms classified</option>
+                <option value="more_than_1000">More than 1000 mammograms classified</option>
+            </select>
+
+            <label for="control_last_time_eval">Time since last mammogram classification:</label>
+            <select id="control_last_time_eval" name="control_last_time_eval" required>
+                <option value="" disabled selected>Select your option</option>
+                <option value="no_classification">No previous classification</option>
+                <option value="less_than_1">Less than 1 year</option>
+                <option value="between_1_2">1 to 2 years</option>
+                <option value="more_than_3">3 or more years</option>
+            </select>
+        </form>
+
+        <button type="submit" form="control_form">Proceed with Experiment</button>
+	</body>
+</html>

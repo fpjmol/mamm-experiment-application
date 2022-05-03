@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="/lib/gen_info.js"></script>
+	</head>
+
+	<body>
+        <p>For your participation in this experiment, an automatic ID is generated. Please make sure to <strong>note this ID down somewhere</strong>, 
+            as you need it to log back into the experiment.</p>
+        <h3>Your Participant ID:</h3>
+        <h4><%= participant_id %></h4>
+        <a href="/experiment_start/<%=participant_id%>">Click here to continue</a>
+	</body>
+</html>

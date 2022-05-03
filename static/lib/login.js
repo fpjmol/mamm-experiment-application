@@ -1,22 +1,20 @@
-$(document).on("keydown", "form", function(event) { 
-    return event.key != "Enter";
-});
-
-
 $(function() {
     const rootURL = "http://localhost:3000"
-    
-    const data = { username: 'example' };
+    // const rootURL = "https://mamm-experiment-application.herokuapp.com/" 
 
-    document.forms["testForm"].addEventListener('submit', (e) => {
-        console.log("submitted")
+    // Handling Form Submission + Navigation to next page
+    document.forms["login"].addEventListener('submit', (e) => {
+        e.preventDefault();
+
         const data = Object.fromEntries(new FormData(e.target).entries());
         console.log(data)
-        
-        postable_data = {name: data.name}
 
-        fetch(`${rootURL}/insert`, {
-            method: 'POST', // or 'PUT'
+        postable_data = data
+
+        // Handle correct fetch, with participant ID moving to /classify/:id
+
+        fetch(`${rootURL}/register_participant`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -25,16 +23,11 @@ $(function() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
+            
+            window.location.replace(`${rootURL}/generic_info`)
         })
         .catch((error) => {
             console.error('Error:', error);
         });
-
-
     });
-
-
 });
-
-
-
