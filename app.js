@@ -14,21 +14,21 @@ const mysql = require('mysql2');
 
 // SETTINGS FOR localhost DB:
 
-const db = mysql.createConnection({
-    user: 'root',
-    host: 'localhost',
-    password: '31804495598',
-    database: 'experimentdatadb'
-})
+// const db = mysql.createConnection({
+//     user: 'root',
+//     host: 'localhost',
+//     password: '31804495598',
+//     database: 'experimentdatadb'
+// })
 
 // SETTINGS FOR HEROKU DB:
 
-// const db = mysql.createConnection({
-//     user: 'b69c157586d645',
-//     host: 'eu-cdbr-west-02.cleardb.net',
-//     password: '0bc03ea5',
-//     database: 'heroku_9fd274ebb37256e'
-// })
+const db = mysql.createConnection({
+    user: 'b69c157586d645',
+    host: 'eu-cdbr-west-02.cleardb.net',
+    password: '0bc03ea5',
+    database: 'heroku_9fd274ebb37256e'
+})
 
 // Supporting Variables -----------------------------------------
 

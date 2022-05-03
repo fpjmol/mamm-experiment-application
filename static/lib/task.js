@@ -2,8 +2,8 @@ $(() => {
 
     // CONSTANTS: -------------------------------------------------------------
     
-    const rootURL = "http://localhost:3000"
-    // const rootURL = "https://mamm-experiment-application.herokuapp.com/" 
+    // const rootURL = "http://localhost:3000"
+    const rootURL = "https://mamm-experiment-application.herokuapp.com/" 
     const INFO_DISPLAY_TIME = 10000 // in ms
     const TASK_START_TIME = new Date().getTime();
 
