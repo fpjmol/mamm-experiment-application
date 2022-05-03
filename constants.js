@@ -16,5 +16,7 @@ module.exports = {
         "type_c": "c62uiX55nC"
     },
 
-    MAMM_IMAGE_IDS: [1, 2, 3]
+    MAMM_IMAGE_IDS: [1, 2, 3],
+
+    JQUERY_CDN_URL: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"
 }

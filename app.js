@@ -77,19 +77,36 @@ app.listen(PORT, () => {
 
 // Routing ------------------------------------------------------
 app.get('/', (req, res) => {
-    res.render('index');
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    res.render('index', page_data);
 });
 
 app.get('/register', (req, res) => {
-    res.render('register');
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    res.render('register', page_data);
 });
 
 app.get('/generic_info', (req, res) => {
-    res.render('generic_info', {participant_id: req.cookies.participant_id}); // Possible error cause: participant_id = null
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id = req.cookies.participant_id
+    }
+    
+    res.render('generic_info', page_data); // Possible error cause: participant_id = null
 });
 
 app.get('/birads_video', (req, res) => {
-    res.render('birads_video')
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+    
+    res.render('birads_video', page_data)
 });
 
 app.get('/experiment_start/:id', async (req, res) => {
@@ -131,10 +148,13 @@ app.get('/experiment_start/:id', async (req, res) => {
 });
 
 app.get('/video/:id', (req, res) => {
-    const video_id = req.params.id;
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        video_id: req.params.id
+    }
 
     // finish rendering correct video (assets in db?)
-    res.render('video', {video_id});
+    res.render('video', page_data);
 });
 
 app.get('/experiment/:id', (req, res) => {
@@ -238,7 +258,8 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
         },
         (result, classification_obj, participant_type, callback) => {
             fetched_data = result[0];
-            page_data = {
+            var page_data = {
+                JQUERY_URL: constants.JQUERY_CDN_URL,
                 participant_id,
                 participant_type,
                 PARTICIPANT_TYPES: constants.PARTICIPANT_TYPE,
@@ -256,7 +277,11 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
 });
 
 app.get('/experiment_end', (req, res) => {
-    res.render('experiment_end')
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    res.render('experiment_end', page_data)
 });
 
 // POST REQUESTS ---------------------------------------------------------------------
