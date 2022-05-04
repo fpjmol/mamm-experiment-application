@@ -5,9 +5,11 @@ const cookieParser = require('cookie-parser')
 const async = require('async')
 const constants = require('./constants')
 const utils = require('./utils')
+const favicon = require('serve-favicon')
 
 const app = express();
 
+app.use(favicon(__dirname + '/static/img/favicon.ico'))
 app.use(cookieParser())
 
 const mysql = require('mysql2');
@@ -150,11 +152,12 @@ app.get('/experiment_start/:id', async (req, res) => {
 app.get('/video/:id', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        video_id: req.params.id
+        video_id: req.params.id,
+        participant_id: req.cookies.participant_id
     }
 
     // finish rendering correct video (assets in db?)
-    res.render('video', page_data);
+    res.render('video', page_data); // Possible error cause: participant_id = null
 });
 
 app.get('/experiment/:id', (req, res) => {
@@ -311,7 +314,7 @@ app.post("/register_participant", (req, res) => {
             control_exp_radiology = req.body.control_exp_radiology;
             control_exp_mammography = req.body.control_exp_mammography;
             control_last_time_eval = req.body.control_last_time_eval;
-        
+
             classification = JSON.stringify(utils.initializeClassificationObject());
             
             // Truly random assignment of category types
@@ -319,6 +322,13 @@ app.post("/register_participant", (req, res) => {
 
             // Cyclic assignment of participant types (to force equal distribution)
             participant_type = getCycledElement(category_type);
+
+            // Define no_contact
+            if (req.body.no_contact) {
+                no_contact = true;
+            } else {
+                no_contact = false;
+            }
 
             const query = `INSERT INTO participants (
                 email,
@@ -328,8 +338,9 @@ app.post("/register_participant", (req, res) => {
                 control_last_time_eval,
                 classification,
                 participant_type,
-                category_type
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+                category_type,
+                no_contact
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting participant registration...")
             db.query(query, [
@@ -340,7 +351,8 @@ app.post("/register_participant", (req, res) => {
                 control_last_time_eval,
                 classification,
                 participant_type,
-                category_type
+                category_type,
+                no_contact
             ], 
             (err, result) => {
                 if (err) {

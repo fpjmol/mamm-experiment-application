@@ -2,16 +2,31 @@
 	<head>
 		<title>Experiment Application</title>
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/gen-info.css">
 
 		<script src="<%= JQUERY_URL%>"></script>
 		<script type="text/javascript" src="/lib/gen_info.js"></script>
 	</head>
 
 	<body>
-        <p>For your participation in this experiment, an automatic ID is generated. Please make sure to <strong>note this ID down somewhere</strong>, 
-            as you need it to log back into the experiment.</p>
-        <h3>Your Participant ID:</h3>
-        <h4><%= participant_id %></h4>
-        <a href="/experiment_start/<%=participant_id%>">Click here to continue</a>
+		<div id="header-wrapper">
+			<div id="header-content">
+				<h1>Successfully Registered!</h1>
+			</div>
+		</div> 
+		<div id="body-wrapper">
+			<div id="body-content">
+				<div class="text-box">
+					<p>Thank you, your registration has been successfully logged. Your email address will function as your <strong>unique Participant ID</strong>.<br>
+						If at any point during the experiment you lose internet connection, or something goes wrong, please navigate to the following URL:</p>
+
+					<h3>https://mamm-experiment-application.herokuapp.com<strong>/login</strong></h3>
+
+					<p>On this page, you can simply type in your email address as your participant ID and pick up where you left off.</p>
+				</div>
+			
+				<a href="/experiment_start/<%=participant_id%>">continue</a>
+			</div>
+		</div>        
 	</body>
 </html>

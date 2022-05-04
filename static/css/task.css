@@ -3,6 +3,7 @@
 body {
     font-family: Arial;
     color: white;
+    background-color: rgb(69,69,69);
 }
 
 .hidden {

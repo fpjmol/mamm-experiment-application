@@ -1,6 +1,5 @@
 $(function() {
-    // const rootURL = "http://localhost:3000"
-    const rootURL = "https://mamm-experiment-application.herokuapp.com" 
+    const rootURL = window.location.protocol + '//' + window.location.host;
 
     // Handling Form Submission + Navigation to next page
     document.forms["control_form"].addEventListener('submit', (e) => {
