@@ -1,15 +1,3 @@
-label {
-    font-weight: bold;
-}
-
-.form-element-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 30px;
-    width: 50%;
-}
-
 .text-box-wrapper .form-element-wrapper {
     padding: 30px 30px;
     width: 100%;
@@ -56,5 +44,87 @@ label {
 #register-submit-button:hover {
     cursor: pointer;
     color:rgba(255,255,255,0.8);
-    box-shadow: inset 0 0 10px rgb(140,140,140);
+    box-shadow: inset 0 0 10px rgb(100,100,100);
+}
+
+#suggestion-modal {
+    background-color: rgb(100,100,100);
+    position: absolute;
+    right: 200px;
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 300px;
+}
+
+#suggestion-modal button {
+    border: none;
+    margin: 2px 2px 0 0;
+    font-size: 15px;
+}
+
+#suggestion-modal button:hover {
+    cursor: pointer;
+    background-color: rgb(200,200,200);
+}
+
+#modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 100%;
+}
+
+#modal-text h3 {
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: bolder;
+}
+
+#modal-text p {
+    margin-top: 12px;
+}
+
+#modal-content a {
+    margin: 20px 0;
+    height: 40px;
+}
+
+/* HANDLING MODAL ANIMATIONS */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        top: 20px;
+    }
+    to {
+        opacity: 1;
+        top: 50px;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+        top: 50px;
+    }
+    to {
+        opacity: 0;
+        top: 80px;
+    }
+}
+
+.fade-in {
+    animation-name: fade-in;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+}
+
+.fade-out {
+    animation-name: fade-out;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
 }

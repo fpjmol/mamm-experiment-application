@@ -237,7 +237,7 @@ $(() => {
 
         if (participant_type !== PARTICIPANT_TYPES.TYPE_C) { // Only exists for type A & B participants
             
-            if (time_heatmap_end == null && total_time_heatmap != 0) { // Handles case where heatmap is still open upon submit
+            if (time_heatmap_end == null && total_visits_heatmap != 0) { // Handles case where heatmap is still open upon submit
                 time_heatmap_end = new Date().getTime();
                 total_time_heatmap += (time_heatmap_end - time_heatmap_start)
             }

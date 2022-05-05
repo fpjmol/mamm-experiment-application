@@ -16,6 +16,13 @@ module.exports = {
         "type_c": "c62uiX55nC"
     },
 
+    EXPERIMENT_STAGE: {
+        GEN_INFO: "gen_info",
+        BIRADS_VIDEO: "birads_video",
+        PRIME_VIDEO: "prime_video",
+        EXP_TASKS: "experiment_tasks"
+    },
+
     MAMM_IMAGE_IDS: [1, 2, 3],
 
     JQUERY_CDN_URL: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"

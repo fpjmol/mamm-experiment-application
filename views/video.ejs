@@ -5,10 +5,15 @@
 		<link rel="stylesheet" type="text/css" href="/css/video.css">
         
         <script src="<%= JQUERY_URL%>"></script>
-		<!-- <script type="text/javascript" src="/lib/classify.js"></script> -->
+		<script type="text/javascript" src="/lib/video.js"></script>
 	</head>
 
 	<body>
+		<!-- Injecting EJS variables into JS environment -->
+		<script> 
+			var participant_id = '<%= participant_id %>';
+		</script>
+
 		<div id="header-wrapper">
 			<div id="header-content">
 				<h1>Video</h1>

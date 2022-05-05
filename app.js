@@ -73,10 +73,6 @@ app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/static'))
 app.use(express.json())
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}...`)
-});
-
 // Routing ------------------------------------------------------
 app.get('/', (req, res) => {
     var page_data = {
@@ -94,18 +90,19 @@ app.get('/register', (req, res) => {
     res.render('register', page_data);
 });
 
-app.get('/generic_info', (req, res) => {
+app.get('/generic_info/:id', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id: req.cookies.participant_id
+        participant_id: req.params.id
     }
     
-    res.render('generic_info', page_data); // Possible error cause: participant_id = null
+    res.render('generic_info', page_data);
 });
 
-app.get('/birads_video', (req, res) => {
+app.get('/birads_video/:id', (req, res) => {
     var page_data = {
-        JQUERY_URL: constants.JQUERY_CDN_URL
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id: req.params.id
     }
     
     res.render('birads_video', page_data)
@@ -138,7 +135,7 @@ app.get('/experiment_start/:id', async (req, res) => {
                 res.redirect('/experiment/' + participant_id);
             } else if (category_type === constants.CATEGORY_TYPE.PRIMING) {
                 const video_id = constants.VIDEO_SUFFIX[participant_type] // Spoofing a video id to prevent bias
-                res.redirect('/video/' + video_id)
+                res.redirect(`/video/${participant_id}/${video_id}`)
             }
             callback(null)
         }
@@ -149,20 +146,21 @@ app.get('/experiment_start/:id', async (req, res) => {
     });
 });
 
-app.get('/video/:id', (req, res) => {
+app.get('/video/:participant_id/:video_id', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        video_id: req.params.id,
-        participant_id: req.cookies.participant_id
+        video_id: req.params.video_id,
+        participant_id: req.params.participant_id
     }
 
     // finish rendering correct video (assets in db?)
-    res.render('video', page_data); // Possible error cause: participant_id = null
+    res.render('video', page_data);
 });
 
 app.get('/experiment/:id', (req, res) => {
     const participant_id = req.params.id;
     var classification_obj = null;
+    console.log("") // For new line
 
     async.waterfall([
         (callback) => {
@@ -192,16 +190,17 @@ app.get('/experiment/:id', (req, res) => {
                 mainCallback(null)
             }
         },
-        (classification_obj, callback) => { // Updating classification object in db
+        (classification_obj, callback) => { // Updating classification object & exp_stage in db
             if (classification_obj) {
                 postable_classification = JSON.stringify(classification_obj)
+                var exp_stage = constants.EXPERIMENT_STAGE.EXP_TASKS
 
                 db.query(
-                    'UPDATE participants SET classification = ? WHERE email  = ?',
-                    [postable_classification, participant_id], 
+                    'UPDATE participants SET classification = ?, exp_stage = ? WHERE email  = ?',
+                    [postable_classification, exp_stage, participant_id], 
                     (err, result) => {
                     if (err) {
-                        console.log("Something went wrong in updating classification after loading new current.")
+                        console.log("Something went wrong in updating classification & exp_stage after loading new current.")
                         mainCallback(err)
                     }
                     console.log(`Classification object for participant ${participant_id} updated`)
@@ -287,9 +286,50 @@ app.get('/experiment_end', (req, res) => {
     res.render('experiment_end', page_data)
 });
 
-// POST REQUESTS ---------------------------------------------------------------------
+app.get('/login', (req, res) => {
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+    
+    res.render('login', page_data)
+});
+
+app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experiment
+    const participant_id = req.params.id;
+    const exp_stage = req.params.stage;
+    const participant_type = req.params.type;
+
+    var join_URL = null;
+
+    switch(exp_stage) {
+        case constants.EXPERIMENT_STAGE.GEN_INFO:
+            join_URL = '/generic_info/' + participant_id;
+            break;
+        case constants.EXPERIMENT_STAGE.BIRADS_VIDEO:
+            join_URL = '/birads_video/' + participant_id;
+            break;
+        case constants.EXPERIMENT_STAGE.PRIME_VIDEO:
+            const video_id = constants.VIDEO_SUFFIX[participant_type];
+            join_URL = '/video/' + video_id;
+            break;
+        case constants.EXPERIMENT_STAGE.EXP_TASKS:
+            join_URL = '/experiment/' + participant_id;
+            break
+    }
+
+    if (join_URL) {
+        console.log(`Joining user: ${participant_id} on stage: ${exp_stage}`)
+        res.redirect(join_URL);
+    } else {
+        console.error(`Something went wrong in loading the experiment stage during login.`)
+    }
+});
+
+
+// POST/PUT REQUESTS ---------------------------------------------------------------------
 app.post("/register_participant", (req, res) => {
     const email = req.body.email
+    console.log("") // For new line
 
     async.waterfall([
         (callback) => { // Verifying availability of email address
@@ -300,7 +340,7 @@ app.post("/register_participant", (req, res) => {
                     console.log("Failed to retrieve data for ID: " + email)
                     mainCallback(err)
                 } else if (result.length != 0) {
-                    res.status(500).send({ error: "This email is already in use. Please register with a different email or log in with your current email."})
+                    res.status(500).send({ error: "This email is already in use. Please register with a different email."})
                     mainCallback(`Email ${email} is already in use. Aborting registration.`)
                 } else {
                     callback()
@@ -323,6 +363,9 @@ app.post("/register_participant", (req, res) => {
             // Cyclic assignment of participant types (to force equal distribution)
             participant_type = getCycledElement(category_type);
 
+            // Assignment of initial Experiment Stage
+            exp_stage = constants.EXPERIMENT_STAGE.GEN_INFO;
+
             // Define no_contact
             if (req.body.no_contact) {
                 no_contact = true;
@@ -339,8 +382,9 @@ app.post("/register_participant", (req, res) => {
                 classification,
                 participant_type,
                 category_type,
-                no_contact
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                no_contact,
+                exp_stage
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting participant registration...")
             db.query(query, [
@@ -352,7 +396,8 @@ app.post("/register_participant", (req, res) => {
                 classification,
                 participant_type,
                 category_type,
-                no_contact
+                no_contact,
+                exp_stage
             ], 
             (err, result) => {
                 if (err) {
@@ -365,8 +410,8 @@ app.post("/register_participant", (req, res) => {
                 participant_id = email
                 console.log("Registered participant: " + entry_id)
                 console.log("Participant ID: " + participant_id)
-                res.cookie('participant_id', participant_id)
         
+                result.participant_id = participant_id
                 res.send(result)
                 callback(null);
             });
@@ -375,7 +420,8 @@ app.post("/register_participant", (req, res) => {
 });
 
 app.post("/save_task", (req, res) => {
-
+    console.log("") // For new line
+    
     async.waterfall([
         (callback) => { // Posting Classification measurements to DB
             
@@ -464,65 +510,60 @@ app.post("/save_task", (req, res) => {
     });
 });
 
+app.post('/login', (req, res) => {
+    const email = req.body.participant_id
+    console.log("") // For new line
 
-// UPDATING CLASSIFICATION -----------------------------------------------------------
-
-// app.put("/update_class1", (req, res) => {
-//     const participant_id = req.body.id
-//     const classification = JSON.stringify(req.body.classification)
-
-//     console.log("updating classification 1")
-
-//     db.query(
-//         'UPDATE participants SET classification = ? WHERE id = ?',
-//         [classification, participant_id], 
-//         (err, result) => {
-//         if (err) {
-//             console.log(err)
-//         }
-    
-//         res.send(result)
-//     });
-
-// });
-
-// app.put("/update_tasks", (req, res) => {
-//     const task_id = req.body.id
-//     const true_classification = JSON.stringify(req.body.true_classification)
-//     const ai_classification = JSON.stringify(req.body.ai_classification)
-    
-//     db.query(
-//         'UPDATE tasks SET true_classification = ?, ai_classification = ?  WHERE id_task = ?',
-//         [true_classification, ai_classification, task_id], 
-//         (err, result) => {
-//         if (err) {
-//             console.log(err)
-//         }
-        
-//         res.send(result)
-//     });
-
-// });
-
-
-// Database Initial Population Links -------------------------------------------------
-
-app.post("/build_database", (req, res) => {
-    const participant_name = req.body.name
-
-    console.log("insert req received")
-    console.log("request:")
-    console.log(req.body)
-    
-    db.query(
-        'INSERT INTO participants (first_name) VALUES (?)',
-        [participant_name], 
+    db.query('SELECT email, exp_stage, participant_type FROM participants WHERE email = ?', 
+    [email], 
         (err, result) => {
         if (err) {
-            console.log(err)
+            console.log("Failed to retrieve data for ID: " + email)
+        } else if (result.length === 0) {
+            res.status(500).send({ error: "This email does not seem to be registered. Please register a valid email to continue."})
+            console.log(`Login attempt with ID: ${email}. This ID was not found in existing entries.`)
+        } else {
+            console.log(`Login successful for ID: ${email}`)
+            res.send(result)
         }
-    
-        res.send(result)
     });
 
+});
+
+app.put("/update_stage/:stage", (req, res) => {
+    const participant_id = req.body.id
+    const exp_stage = req.params.stage
+
+    console.log("") // For new line
+    console.log(`Updating stage for ${participant_id}...`)
+
+    db.query(
+        'UPDATE participants SET exp_stage = ? WHERE email = ?',
+        [exp_stage, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: "Updating experiment stage on page load failed."})
+        } else {
+            console.log(`Updated stage for ${participant_id} to ${exp_stage}`)
+            res.send(result)
+        }
+    });
+
+});
+
+// STARTING SERVER ---------------------------------------------------------------------
+
+app.get('*', function(req, res){
+    var page_data = {
+        attempted_URL: req.get('host') + req.originalUrl,
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    res.render('404', page_data)
+});
+
+// STARTING SERVER ---------------------------------------------------------------------
+
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}...`)
 });
