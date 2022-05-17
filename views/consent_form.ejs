@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/consent.css">
+
+		<script src="<%= JQUERY_URL%>"></script>
+		<script type="text/javascript" src="/lib/consent.js"></script>
+	</head>
+
+	<body>
+		<div id="header-wrapper">
+			<div id="header-content">
+				<h1>Welcome!</h1>
+				<img class="logo" id="vu-logo" src="/img/misc/VU-logo-nobg.svg">
+			</div>
+		</div> 
+		<div id="body-wrapper">
+			<div id="body-content">
+				<div class="text-box">
+					<p>Consent Form placeholder</p>
+				</div>
+
+                <div class="text-box">
+					<form id="consent_form">
+                        <div id="consent-wrapper">
+                            <input type="checkbox" id="consent_checkbox" name="consent" required>
+                            <label for="consent">I consent to having my data used for the purposes of this experiment</label>
+                        </div>
+                    </form>
+				</div>
+				<button id="submit-button" type="submit" form="consent_form">Continue</button>
+			</div>
+		</div>
+	</body>
+</html>

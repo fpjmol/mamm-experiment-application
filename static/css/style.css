@@ -26,6 +26,14 @@ h1 {
 
 #header-content {
     width: 75%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#header-content img {
+    height: 90px;
+    width: 370px;
 }
 
 #body-wrapper {

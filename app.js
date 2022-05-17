@@ -32,12 +32,16 @@ const db = mysql.createConnection({
     database: 'cg511cow0to6am6v'
 })
 
+
 // Supporting Variables -----------------------------------------
 
 var p_type_determinant = {
     "priming": 0,
     "explainability": 0
 }
+
+var category_bool_is_priming = true;
+
 
 // Supporting Functions -----------------------------------------
 
@@ -66,14 +70,71 @@ function getCycledElement(type_identifier) { // Returns participant type based o
     return constants.PARTICIPANT_TYPE[Object.keys(constants.PARTICIPANT_TYPE)[type_index]]
 }
 
+function flipCategoryBool() {
+    category_bool_is_priming = !category_bool_is_priming
+}
+
+
+// Functions for Server Variables ------------------------------
+
+function initializeServerVariables() {
+    const server_var_id = 1;
+
+    db.query('SELECT * FROM server WHERE id_server = ?', 
+    [server_var_id], 
+        (err, result) => {
+            if (err) {
+                console.log("Retrieving Server Variables failed:")
+                console.log(err)
+            } else {
+                p_type_determinant = result[0].p_type_determinant;
+                category_bool_is_priming = result[0].category_bool_is_priming;
+                
+                console.log("Retrieving Server Variables succesfull:")
+                console.log(`p_type_determinant: ${JSON.stringify(p_type_determinant)}`)
+                console.log(`category_bool_is_priming: ${category_bool_is_priming}`)
+            }
+    });
+}
+
+function saveServerVariables(callback) {
+    const server_var_id = 1;
+
+    db.query('UPDATE server SET p_type_determinant = ?, category_bool_is_priming = ? WHERE id_server = ?', 
+    [
+        JSON.stringify(p_type_determinant),
+        category_bool_is_priming,
+        server_var_id
+    ], 
+        (err, result) => {
+            if (err) {
+                console.log("Updating Server Variables failed:")
+                console.log(err)
+                callback(err)
+            } else {
+                callback(null)
+            }
+    });
+}
+
+
+// Populating Server Variables ----------------------------------
+
+initializeServerVariables()
+
+
 // Register view engine -----------------------------------------
+
 app.set('view engine', 'ejs')
 
 // Middleware and static files ----------------------------------
+
 app.use(express.static(__dirname + '/static'))
 app.use(express.json())
 
+
 // Routing ------------------------------------------------------
+
 app.get('/', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL
@@ -81,6 +142,14 @@ app.get('/', (req, res) => {
 
     res.render('index', page_data);
 });
+
+app.get('/consent_form', (req, res) => {
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    res.render('consent_form', page_data);
+})
 
 app.get('/register', (req, res) => {
     var page_data = {
@@ -327,6 +396,7 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
 
 
 // POST/PUT REQUESTS ---------------------------------------------------------------------
+
 app.post("/register_participant", (req, res) => {
     const email = req.body.email
     console.log("") // For new line
@@ -357,8 +427,16 @@ app.post("/register_participant", (req, res) => {
 
             classification = JSON.stringify(utils.initializeClassificationObject());
             
-            // Truly random assignment of category types
-            category_type = constants.CATEGORY_TYPE[utils.getRandomElement(Object.keys(constants.CATEGORY_TYPE))];
+            // Truly random assignment of category types --> DEPRICATED TO FORCE EQUAL DISTRIBUTION!!!
+            // category_type = constants.CATEGORY_TYPE[utils.getRandomElement(Object.keys(constants.CATEGORY_TYPE))]; 
+
+            // Cyclic assignment of category types
+            if (category_bool_is_priming) {
+                category_type = constants.CATEGORY_TYPE.PRIMING
+            } else {
+                category_type = constants.CATEGORY_TYPE.EXPLAINABILITY
+            }
+            flipCategoryBool(); // flips category for next participant
 
             // Cyclic assignment of participant types (to force equal distribution)
             participant_type = getCycledElement(category_type);
@@ -405,7 +483,7 @@ app.post("/register_participant", (req, res) => {
                     console.log(err)
                 }
         
-                // Saving participant ID in cookies
+                // Saving participant ID
                 entry_id = result.insertId
                 participant_id = email
                 console.log("Registered participant: " + entry_id)
@@ -415,6 +493,9 @@ app.post("/register_participant", (req, res) => {
                 res.send(result)
                 callback(null);
             });
+        },
+        (callback) => {
+            saveServerVariables(callback);
         }
     ], mainCallback);
 });
@@ -551,6 +632,7 @@ app.put("/update_stage/:stage", (req, res) => {
 
 });
 
+
 // STARTING SERVER ---------------------------------------------------------------------
 
 app.get('*', function(req, res){
@@ -561,6 +643,7 @@ app.get('*', function(req, res){
 
     res.render('404', page_data)
 });
+
 
 // STARTING SERVER ---------------------------------------------------------------------
 

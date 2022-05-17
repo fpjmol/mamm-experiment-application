@@ -1,0 +1,11 @@
+#consent {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+#consent-wrapper {
+    display: flex;
+    margin: 26px 30px;
+    align-items: center;
+}
