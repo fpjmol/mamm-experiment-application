@@ -19,14 +19,14 @@ $(() => {
     var total_time_first_birads_class = 0;
     var total_birads_class_changes = 0;
 
-    if (participant_type !== PARTICIPANT_TYPES.TYPE_C) { // Only exists for type A & B participants
+    if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants (or Priming group)
         var total_time_heatmap = 0;
         var time_heatmap_start = null;
         var time_heatmap_end = null;
         var total_visits_heatmap = 0;
     }
 
-    if (participant_type === PARTICIPANT_TYPES.TYPE_A) { // Only exists for type A participants
+    if (participant_type === PARTICIPANT_TYPES.TYPE_A || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A participants (or Priming group)
         var total_time_contr_attr = 0;
         var time_contr_attr_start = null;
         var total_visits_contr_attr = 0;

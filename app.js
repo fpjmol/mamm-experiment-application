@@ -333,7 +333,9 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
                 JQUERY_URL: constants.JQUERY_CDN_URL,
                 participant_id,
                 participant_type,
+                category_type,
                 PARTICIPANT_TYPES: constants.PARTICIPANT_TYPE,
+                CATEGORY_TYPES: constants.CATEGORY_TYPE,
                 task: fetched_data,
                 classification: classification_obj
             }
