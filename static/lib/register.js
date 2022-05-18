@@ -97,7 +97,7 @@ $(function() {
                 
             } else {
                 console.log('Success:', data);
-                window.location.replace(`${rootURL}/generic_info/${data.participant_id}`)
+                window.location.replace(`${rootURL}/registration-successful/${data.participant_id}`)
             }
         })
         .catch((error) => {

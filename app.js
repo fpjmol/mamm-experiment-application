@@ -159,7 +159,7 @@ app.get('/register', (req, res) => {
     res.render('register', page_data);
 });
 
-app.get('/generic_info/:id', (req, res) => {
+app.get('/registration-successful/:id', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
         participant_id: req.params.id
@@ -168,7 +168,7 @@ app.get('/generic_info/:id', (req, res) => {
     res.render('generic_info', page_data);
 });
 
-app.get('/birads_video/:id', (req, res) => {
+app.get('/birads-video/:id', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
         participant_id: req.params.id
@@ -349,7 +349,7 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
 
     async.waterfall([
         (callback) => {
-            db.query('SELECT classification, participant_type FROM participants WHERE email  = ?', 
+            db.query('SELECT classification, participant_type, category_type FROM participants WHERE email  = ?', 
             [participant_id], 
                 (err, result) => {
                 if (err) {
@@ -363,14 +363,15 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
             fetched_data = result[0];
             classification_obj = fetched_data.classification;
             participant_type = fetched_data.participant_type;
+            category_type = fetched_data.category_type;
 
             if (classification_obj.current != task_id) {
                 callback(`DB task_id and URI task_id do not match: ${classification_obj.current} vs ${task_id}`)
             } else {
-                callback(null, classification_obj, participant_type)
+                callback(null, classification_obj, participant_type, category_type)
             }
         },
-        (classification_obj, participant_type, callback) => {
+        (classification_obj, participant_type, category_type, callback) => {
             db.query('SELECT * FROM tasks WHERE id_task = ?', 
             [task_id], 
                 (err, result) => {
@@ -378,11 +379,11 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
                     console.log("Failed to retrieve task data for ID: " + task_id)
                     callback(err)
                 } else {
-                    callback(null, result, classification_obj, participant_type)
+                    callback(null, result, classification_obj, participant_type, category_type)
                 }
             });
         },
-        (result, classification_obj, participant_type, callback) => {
+        (result, classification_obj, participant_type, category_type, callback) => {
             fetched_data = result[0];
             var page_data = {
                 JQUERY_URL: constants.JQUERY_CDN_URL,
@@ -429,18 +430,21 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
 
     switch(exp_stage) {
         case constants.EXPERIMENT_STAGE.GEN_INFO:
-            join_URL = '/generic_info/' + participant_id;
+            join_URL = '/registration-successful/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.BIRADS_VIDEO:
-            join_URL = '/birads_video/' + participant_id;
+            join_URL = '/birads-video/' + participant_id;
+            break;
+        case constants.EXPERIMENT_STAGE.TRAINING:
+            join_URL = '/interface-training/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.PRIME_VIDEO:
             const video_id = constants.VIDEO_SUFFIX[participant_type];
-            join_URL = '/video/' + video_id;
+            join_URL = '/video/' + participant_id + '/'+ video_id;
             break;
         case constants.EXPERIMENT_STAGE.EXP_TASKS:
             join_URL = '/experiment/' + participant_id;
-            break
+            break;
     }
 
     if (join_URL) {

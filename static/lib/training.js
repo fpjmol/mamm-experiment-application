@@ -30,7 +30,7 @@ $(() => {
         console.error('Error:', error);
     });
 
-    
+
     // SETTING BUTTON HIGHLIGHTS: ---------------------------------------------
     // Button highlights are additionally used to protect against button use before explanation
     
@@ -471,6 +471,6 @@ $(() => {
     document.forms["birads_classification_form"].addEventListener('submit', (e) => {
         e.preventDefault();
 
-        window.location.replace(`${rootURL}/experiment_start/${participant_id}`)
+        window.location.replace(`${rootURL}/experiment-start/${participant_id}`)
     });
 });
