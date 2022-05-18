@@ -1,0 +1,316 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/training.css">
+		
+        <script src="<%= JQUERY_URL%>"></script>
+		<script type="text/javascript" src="/lib/training.js"></script>
+	</head>
+
+	<body>
+		
+		<!-- Injecting EJS variables into JS environment -->
+		<script> 
+			var participant_id = '<%= participant_id %>';
+			var participant_type = '<%= participant_type %>';
+			var category_type = '<%= category_type %>';
+			var task_id = parseInt('<%= task.id_task %>');
+
+			const PARTICIPANT_TYPES = JSON.parse('<%- JSON.stringify(PARTICIPANT_TYPES)%>');
+            const CATEGORY_TYPES = JSON.parse('<%- JSON.stringify(CATEGORY_TYPES)%>');
+		</script>
+
+		<!-- Explanation Modals -->
+		<div class="super-modal" id="expl-start-super">
+			<div class="explanation-modal" id="expl-start">
+				<button class="modal-close" id="expl-start-close">&#10006;</button>
+				<div class="modal-content">
+					<div class="modal-text">
+						<h3>Explaining the Interface</h3>
+						<p>We will now guide you through the mammogram classification interface using an <b>example</b> classification task.
+							This task is just to explain the interface, and <b>will not count towards the experiment</b>.
+						</p>
+					</div>
+					<button class="modal-continue" id="expl-start-continue">Continue</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-mammogram">
+			<button class="modal-close" id="expl-mammogram-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>Mammogram</h3>
+					<p>Here you see the mammogram that needs analysis.</p> 
+					<p>From left to right, you see: 
+						<li>right breast bottom view</li>
+						<li>left breast bottom view</li> 
+						<li>right breast side view</li> 
+						<li>left breast side view.</li></p> 
+					<p>By clicking on the mammogram, you can zoom in and out of the image.</p>
+				</div>
+				<button class="modal-continue" id="expl-mammogram-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-AI">
+			<button class="modal-close" id="expl-AI-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>AI Suggestion Button</h3>
+					<p>Here you see the button that shows the AI generated analysis of the mammogram of this task.</p> 
+					<p><b>Go ahead and click it!</b></p>
+				</div>
+				<button class="modal-continue" id="expl-AI-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-AI_suggestion">
+			<button class="modal-close" id="expl-AI_suggestion-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>AI Suggestion</h3>
+					<p>Here you see the AI generated analysis.</p>
+					<p>The value <b>Left</b> gives a BIRADS value for the left breast.</p> 
+					<p>The value <b>Right</b> gives a BIRADS value for the right breast.</p>
+				</div>
+				<button class="modal-continue" id="expl-AI_suggestion-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-PD_info">
+			<button class="modal-close" id="expl-PD_info-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>AI Probability Info</h3>
+					<p><b>Hover over</b> this info button to display the probability distribution of the AI generated suggestion.</p>
+				</div>
+				<button class="modal-continue" id="expl-PD_info-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-AI_info">
+			<button class="modal-close" id="expl-AI_info-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>AI Attribute Info</h3>
+					<p><b>Hover over</b> this info button to display how the mammogram attributes contributed to the AI suggestion.</p>
+				</div>
+				<button class="modal-continue" id="expl-AI_info-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-heatmap">
+			<button class="modal-close" id="expl-heatmap-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>Toggle Heatmap Button</h3>
+					<p>Here you see the button that toggles an AI generated heatmap of analysed tissue, showing which tissue might be malignant.</p> 
+					<p><b>Go ahead and click it!</b></p>
+				</div>
+				<button class="modal-continue" id="expl-heatmap-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-patient">
+			<button class="modal-close" id="expl-patient-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>Patient Information</h3>
+					<p>Here you see relevant information on the patient from whom the mammogram was taken.</p> 
+				</div>
+				<button class="modal-continue" id="expl-patient-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-nr_left">
+			<button class="modal-close" id="expl-nr_left-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>Analyses left</h3>
+					<p>The numbers here show your progress in the experiment.</p>
+					<p>The <b>right</b> number represents how many total mammograms need to be analysed.</p> 
+					<p>The <b>left</b> number represents the number of your current analysing.</p>
+					<p><em><b>Note:</b> because there is just 1 example mammogram, the current counter says <b>1 / 1</b>. In the actual experiment there are 15 total analyses.</em></p>
+				</div>
+				<button class="modal-continue" id="expl-nr_left-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-classification">
+			<button class="modal-close" id="expl-classification-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>Enter your BIRADS Classification</h3>
+					<p>Using these buttons, you select your BIRADS value for each breast.</p>
+					<p><b>Left</b> for the left breast.</p>
+					<p><b>Right</b> for the right breast.</p>
+				</div>
+				<button class="modal-continue" id="expl-classification-continue">Continue</button>
+			</div>
+		</div>
+		
+		<div class="explanation-modal hidden" id="expl-birads">
+			<button class="modal-close" id="expl-birads-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>BIRADS Information</h3>
+					<p><b>Hover over</b> this info button to display a quick reminder of BIRADS values.</p>
+				</div>
+				<button class="modal-continue" id="expl-birads-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="explanation-modal hidden" id="expl-submit">
+			<button class="modal-close" id="expl-submit-close">&#10006;</button>
+			<div class="modal-content">
+				<div class="modal-text">
+					<h3>Submitting your Answer</h3>
+					<p>With this button you can submit your answer. Make sure you've carefully analysed the mammogram before submitting!</p>
+				</div>
+				<button class="modal-continue" id="expl-submit-continue">Continue</button>
+			</div>
+		</div>
+
+		<div class="super-modal hidden" id="expl-end-super">
+			<div class="explanation-modal" id="expl-end">
+				<button class="modal-close" id="expl-end-close">&#10006;</button>
+				<div class="modal-content">
+					<div class="modal-text">
+						<h3>End of Interface Training</h3>
+						<p>That concludes the interface training. After you click the orange <b>CONTINUE</b> button, you can still click around and explore this example interface for yourself.</p>
+						<p>When you feel ready, continue with the experiment by selecting two BIRADS values and pressing the <b>Submit & Continue</b> button.</p>
+					</div>
+					<button class="modal-continue" id="expl-end-continue">Continue</button>
+				</div>
+			</div>
+		</div>
+		
+
+		<!-- Training interface -->
+        <div id="body">
+
+			<div id="task-counter-wrapper">
+				<div class="super-highlight hidden" id="expl-nr_left-highlight"></div>
+				<h2 id="task_counter">1 / 1</h2>
+			</div>
+
+			<div id="mammograms">
+				<div class="super-highlight hidden" id="expl-mammogram-highlight"></div>
+				<img class="mammogram" id="mamm_img" src="/img/mammograms/<%=task.mamm_file_name%>">
+				<img class="mammogram hidden" id="heatmap_img" src="/img/mammograms/<%=task.heat_file_name%>">
+			</div>
+
+			<div id="body_right">
+				<div id="patient_info_wrapper">
+					<div class="super-highlight hidden" id="expl-patient-highlight"></div>
+					<div id="patient_info">
+						<h3>Patient Information</h3>
+						<p><strong>Age:</strong> 62</p>
+						<p><strong>Family History:</strong> Genetic predisposition</p>
+					</div>
+				</div>
+
+				<div id="heatmap-button-wrapper">
+					<div class="button-highlight" id="expl-heatmap-highlight"></div>
+					<button class="heatmap_button" id="show_heatmap_button">Show Heatmap</button>
+					<button class="heatmap_button hidden" id="hide_heatmap_button">Hide Heatmap</button>
+				</div>
+
+				<div class="info_component" id="AI_info">
+					<div class="info_content_wrapper">
+						<div class="info_content_box hidden" id="AI_info_box">
+							<p>This is where the AI info would be displayed</p>
+						</div>
+					</div>
+					<div id="info-icon-wrapper">
+						<div class="info-highlight" id="expl-AI_info-highlight"></div>
+						<img class="info_icon" id="show_AI_info" src="/img/misc/info.png">
+					</div>
+				</div>
+			</div>
+        </div>
+		
+		<div id="classification_menu">
+
+			<div id="classification_menu_left">
+				<div class="button-highlight" id="expl-AI-highlight"></div>
+				<button class="show_ai_button " id="show_AI_button">Show AI suggestion</button>
+				
+				<div id="AI_suggestion-wrapper">
+					<div class="super-highlight hidden" id="expl-AI_suggestion-highlight"></div>
+					<div class="AI_suggestion hidden" id="AI_suggestion">
+						<div id="AI_suggestion_title_wrapper">
+							<h4>AI BIRADS Suggestion:</h4>
+							
+							<div class="info_component" id="PD_info">
+								<div class="info_content_wrapper">
+									<div class="info_content_box hidden" id="PD_info_box">
+										<p>This is where the Prob Distr info would be displayed</p>
+									</div>
+								</div>
+								<div id="info-icon-wrapper">
+									<div class="info-highlight" id="expl-PD_info-highlight"></div>
+									<img class="info_icon" id="show_PD_info" src="/img/misc/info.png">
+								</div>
+							</div>
+						</div>	
+						<h5>Left: <%= task.ai_classification.li%></h5>
+						<h5>Right: <%= task.ai_classification.re%></h5>
+					</div>
+				</div>
+			</div>
+
+			<div id="classification_menu_mid_wrapper">
+				<div class="super-highlight hidden" id="expl-classification-highlight"></div>
+				<div id="classification_menu_mid">
+					<div id="classification_title_wrapper">
+						<h4>Give your classification:</h4>
+
+						<div class="info_component" id="BIRADS_info">
+							<div class="info_content_wrapper">
+								<div class="info_content_box hidden" id="BIRADS_info_box">
+									<p>This is where the birads info would be displayed</p>
+								</div>
+							</div>
+							<div id="info-icon-wrapper">
+								<div class="info-highlight" id="expl-BIRADS-highlight"></div>
+								<img class="info_icon" id="show_BIRADS_info" src="/img/misc/info.png">
+							</div>
+						</div>
+
+					</div>
+
+					<form id="birads_classification_form">
+						<div class="radio-button">
+							<input type="radio" id="cat1" name="birads_class" value="1" required>
+							<label for="cat1">1</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat2" name="birads_class" value="2">
+							<label for="cat2">2</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat3" name="birads_class" value="3">
+							<label for="cat3">3</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat4" name="birads_class" value="4">
+							<label for="cat4">4</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat5" name="birads_class" value="5">
+							<label for="cat5">5</label>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div id="classification_menu_right">
+				<div class="button-highlight" id="expl-submit-highlight"></div> 
+				<button id="task_submit_button" form="birads_classification_form">Submit answer & continue</button>
+			</div>
+		</div>
+	</body>
+</html>

@@ -54,9 +54,10 @@ $(() => {
 
 
     // TOGGLING HEATMAP: ------------------------------------------------------
+
     var show_heatmap_button = document.getElementById("show_heatmap_button");
 
-    if (participant_type !== PARTICIPANT_TYPES.TYPE_C) { // Only exists for type A & B participants
+    if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants
         var hide_heatmap_button = document.getElementById("hide_heatmap_button");
 
         var mammogram_image = document.getElementById("mamm_img");
@@ -88,6 +89,7 @@ $(() => {
     } else {
         show_heatmap_button.classList.add('invisible');
     }
+
 
     // SHOWING AI SUGGESTION: -------------------------------------------------
 
@@ -130,7 +132,7 @@ $(() => {
 
     // AI info box: ================
 
-    if (participant_type === PARTICIPANT_TYPES.TYPE_A) {
+    if (participant_type === PARTICIPANT_TYPES.TYPE_A || category_type === CATEGORY_TYPES.PRIMING) {
         var show_AI_info = document.getElementById("show_AI_info");
         var AI_info_box = document.getElementById("AI_info_box");
 
@@ -170,7 +172,7 @@ $(() => {
 
     // PD info box: ================
 
-    if (participant_type === PARTICIPANT_TYPES.TYPE_A) {
+    if (participant_type === PARTICIPANT_TYPES.TYPE_A || category_type === CATEGORY_TYPES.PRIMING) {
         var show_PD_info = document.getElementById("show_PD_info");
         var PD_info_box = document.getElementById("PD_info_box");
 
@@ -207,6 +209,7 @@ $(() => {
         PD_info.classList.add('invisible');
     }
 
+    
     // SUBMITTING TASK FORM: -------------------------------------------------
 
     document.forms["birads_classification_form"].addEventListener('submit', (e) => {
@@ -235,7 +238,7 @@ $(() => {
             classification_obj
         } 
 
-        if (participant_type !== PARTICIPANT_TYPES.TYPE_C) { // Only exists for type A & B participants
+        if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants
             
             if (time_heatmap_end == null && total_visits_heatmap != 0) { // Handles case where heatmap is still open upon submit
                 time_heatmap_end = new Date().getTime();
@@ -246,7 +249,7 @@ $(() => {
             measured_data.total_visits_heatmap = total_visits_heatmap;
         }
 
-        if (participant_type === PARTICIPANT_TYPES.TYPE_A) { // Only exists for type A participants
+        if (participant_type === PARTICIPANT_TYPES.TYPE_A || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A participants
             measured_data.total_time_prob_distr = total_time_prob_distr
             measured_data.total_visits_prob_distr = total_visits_prob_distr
             

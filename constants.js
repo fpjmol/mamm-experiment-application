@@ -18,6 +18,7 @@ module.exports = {
 
     EXPERIMENT_STAGE: {
         GEN_INFO: "gen_info",
+        TRAINING: "interface_training",
         BIRADS_VIDEO: "birads_video",
         PRIME_VIDEO: "prime_video",
         EXP_TASKS: "experiment_tasks"
@@ -25,5 +26,7 @@ module.exports = {
 
     MAMM_IMAGE_IDS: [1, 2, 3], // Used in util function for population of user classification object
 
-    JQUERY_CDN_URL: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    JQUERY_CDN_URL: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js",
+
+    TRAINING_TASK: 2 
 }

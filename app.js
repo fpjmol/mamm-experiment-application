@@ -177,7 +177,62 @@ app.get('/birads_video/:id', (req, res) => {
     res.render('birads_video', page_data)
 });
 
-app.get('/experiment_start/:id', async (req, res) => {
+app.get('/interface-training/:id', (req, res) => {
+    const participant_id = req.params.id;
+
+
+    async.waterfall([
+        (callback) => {
+            db.query('SELECT category_type, participant_type FROM participants WHERE email = ?', 
+            [participant_id], 
+                (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve data for ID: " + participant_id)
+                    callback(err)
+                }
+                callback(null, result)
+            });
+        }, 
+        (data_result, callback) => {
+            db.query('SELECT * FROM tasks WHERE id_task = ?', 
+            [constants.TRAINING_TASK], 
+                (err, task_result) => {
+                if (err) {
+                    console.log("Failed to retrieve task data for ID: " + constants.TRAINING_TASK)
+                    callback(err)
+                } else {
+                    callback(null, task_result, data_result)
+                }
+            });
+        },
+        (task_result, data_result, callback) => {
+            fetched_data = data_result[0];
+            category_type = fetched_data.category_type;
+            participant_type = fetched_data.participant_type;
+
+            var page_data = {
+                JQUERY_URL: constants.JQUERY_CDN_URL,
+                participant_id,
+                category_type,
+                participant_type,
+                PARTICIPANT_TYPES: constants.PARTICIPANT_TYPE,
+                CATEGORY_TYPES: constants.CATEGORY_TYPE,
+                task: task_result[0]
+            }
+
+            res.render('training', page_data)
+        }
+    ], (err) => {
+        if (err) {
+            console.log(err)
+        }
+    });
+   
+    
+   
+});
+
+app.get('/experiment-start/:id', async (req, res) => {
     const participant_id = req.params.id;
     
     var category_type = null;
@@ -255,7 +310,7 @@ app.get('/experiment/:id', (req, res) => {
                 classification_obj.current = classification_obj.remaining.pop() // Loading new active current
                 callback(null, classification_obj)
             } else {
-                res.redirect('/experiment_end');
+                res.redirect('/experiment-end');
                 mainCallback(null)
             }
         },
@@ -349,7 +404,7 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
     })
 });
 
-app.get('/experiment_end', (req, res) => {
+app.get('/experiment-end', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL
     }

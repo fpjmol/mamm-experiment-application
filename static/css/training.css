@@ -1,0 +1,530 @@
+/* GENERAL COMPONENTS ------------------------ */
+
+body {
+    font-family: Arial;
+    color: white;
+    background-color: rgb(69,69,69);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    visibility: hidden !important;
+}
+
+.info_component {
+    height: auto;
+}
+
+.info_icon {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.info_content_wrapper {
+    position:relative;
+}
+
+.info_content_box {
+    position:absolute;
+    background-color: azure;
+    color: black;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+/* BODY COMPONENTS --------------------------- */
+
+#body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    height: 75%;
+}
+
+#task_counter {
+    margin: 50px 0 0 20px;
+    width: 100px;
+    font-size: 50px;
+    font-weight: bold;
+}
+
+#mammograms {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 70%;
+    height: 100%;
+}
+
+.mammogram {
+    width: 100%;
+}
+
+#body_right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+#patient_info {
+    padding: 5px 20px;
+    border: 1px solid rgb(130, 130, 130)
+}
+
+.heatmap_button_wrapper {
+    margin-left: 10%;
+}
+
+.heatmap_button {
+    width: 50%;
+    height: 100px;
+    font-size: 30px;
+}
+
+#AI_info {
+    margin-bottom: 30px;
+}
+
+#AI_info .info_content_box {
+    top: -300px;
+    left: -100px;
+    width: 250px;
+    height: 300px;
+    padding: 0px 5px;
+}
+
+/* MENU COMPONENTS --------------------------- */
+
+#classification_menu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 25%;
+    background-color: rgb(30,30,30);
+}
+
+/* Menu Left ------------------ */
+
+#classification_menu_left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    height: 100%;
+}
+
+#show_AI_button {
+    height: 50%;
+    font-size: 30px;
+}
+
+#AI_suggestion {
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 20px;
+    padding: 0px 30px;
+}
+
+#AI_suggestion h4 {
+    font-size: 30px;
+    font-weight: bolder;
+    margin: 0;
+}
+
+#AI_suggestion h5 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+#AI_suggestion_title_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#PD_info .info_icon {
+    height: 30px;
+    width: 30px;
+    margin-left: 20px;
+}
+
+#PD_info .info_content_box{
+    top: -300px;
+    left: 30px;
+    width: 250px;
+    height: 300px;
+    padding: 0px 5px;
+}
+
+/* Menu Mid ------------------ */
+
+#classification_menu_mid_wrapper {
+    width: 30%;
+}
+
+#classification_menu_mid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+#classification_title_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#classification_title_wrapper h4 {
+    display: inline-block;
+    font-size: 40px;
+    font-weight: bolder;
+    margin: 10px 0 10px 30px;
+}
+
+#BIRADS_info {
+    margin-right: 10px;
+}
+
+#BIRADS_info .info_icon {
+    height: 30px;
+    width: 30px;
+}
+
+#BIRADS_info .info_content_box {
+    top: -300px;
+    left: -100px;
+    width: 250px;
+    height: 300px;
+    padding: 0px 5px;
+}
+
+#birads_classification_form {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 20px 0 0 0;
+}
+
+.radio-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.radio-button label {
+    font-size: 30px;
+    font-weight: bolder;
+    margin-top: 5px;
+}
+
+.radio-button input[type=radio] {
+    height: 40px;
+    width: 40px;
+    vertical-align: middle;
+}
+
+/* Menu Right ------------------ */
+
+#classification_menu_right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+}
+
+#task_submit_button {
+    font-size: 30px;
+    height: 50%;
+    width: 50%;
+}
+
+
+/* EXPLANATION MODALS ----------------------------------- */
+
+.super-modal {
+    background-color: rgba(0,0,0,0.7);
+    position:absolute;
+    z-index:10;
+    height:100%;
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.explanation-modal {
+    background-color: rgb(50, 92, 148);
+    position: absolute;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 300px;
+}
+
+#expl-start {
+    position: static !important;
+    width: 600px;
+}
+
+#expl-end {
+    position: static !important;
+    width: 600px;
+}
+
+#expl-end-super {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-close {
+    border: none;
+    margin: 2px 2px 0 0;
+    font-size: 15px;
+}
+
+.modal-close:hover {
+    cursor: pointer;
+    background-color: rgb(200,200,200);
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 100%;
+}
+
+.modal-text {
+    width: 80%;
+}
+
+.modal-text h3 {
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: bolder;
+}
+
+.modal-text p {
+    margin-top: 12px;
+}
+
+.modal-text p b {
+    font-weight: 800;
+}
+
+.modal-continue {
+    color: black;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    
+    width: 150px;
+    height: 40px;
+    background-color: orange;
+
+    margin-top: 50px;
+    margin: 20px 0;
+}
+
+.modal-continue:hover {
+    color:rgba(255,255,255,0.8);
+    box-shadow: inset 0 0 10px rgb(100,100,100);
+}
+
+/* HIGHLIGHT SUPERS ------------------------------------------ */
+
+.super-highlight {
+    position: absolute;
+    z-index:1;
+    width: inherit;
+    height: inherit;
+}
+
+.button-highlight {
+    position: absolute;
+    z-index:0;
+    background-color:rgba(50,50,50,0.7);
+}
+
+.info-highlight {
+    position: absolute;
+    z-index:0;
+    background-color:rgba(50,50,50,0.7);
+    border-radius: 50%;
+}
+
+#expl-PD_info-highlight {
+    margin-left: 20px;
+    height: 30px;
+    width: 30px;
+}
+
+#expl-nr_left-highlight {
+    margin: 50px 0 0 20px;
+}
+
+/* MODAL POSITIONS ------------------------------------------- */
+
+#expl-mammogram {
+    top:200px;
+    right: 200px;
+}
+
+#expl-AI {
+    top: 55%;
+    left: 400px;
+}
+
+#expl-AI_suggestion {
+    top: 40%;
+    left: 400px;
+}
+
+#expl-PD_info {
+    top: 60%;
+    left: 5%;
+}
+
+#expl-AI_info {
+    right: 350px;
+    top: 500px;
+}
+
+#expl-heatmap {
+    right:0;
+}
+
+#expl-patient {
+    right: 350px;
+    top: 20px;
+}
+
+#expl-nr_left {
+    top:20px; 
+    left: 150px;
+}
+
+#expl-classification {
+    bottom: 250px;
+    left:50%;
+}
+
+#expl-birads {
+    bottom: 250px;
+    left:40%;
+}
+
+#expl-submit {
+    right: 200px;
+    bottom: 250px;
+}
+
+#expl-end {
+
+}
+
+/* HANDLING MODAL ANIMATIONS ---------------------------------- */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        top: 20px;
+    }
+    to {
+        opacity: 1;
+        top: 50px;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+        top: 50px;
+    }
+    to {
+        opacity: 0;
+        top: 80px;
+    }
+}
+
+.fade-in {
+    animation-name: fade-in;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+}
+
+.fade-out {
+    animation-name: fade-out;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+}
+
+@keyframes highlighting-blue {
+    from {
+        background-color: rgba(255, 153, 0, 0.747);
+    }
+    to {
+        background-color: rgba(143, 248, 252, 0.712);
+    }
+}
+
+@keyframes highlighting-clear {
+    from {
+        background-color: rgba(255, 153, 0, 0.747);
+    }
+    to {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+@keyframes highlighting-more-blue {
+    from {
+        background-color: rgba(104, 93, 255, 0.747);
+    }
+    to {
+        background-color: rgba(143, 248, 252, 0.712);
+    }
+}
+
+.highlighted-blue {
+    animation-name: highlighting-blue;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+.highlighted-clear {
+    animation-name: highlighting-clear;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+.highlighted-more-blue {
+    animation-name: highlighting-more-blue;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
