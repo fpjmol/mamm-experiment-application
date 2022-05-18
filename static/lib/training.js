@@ -97,6 +97,7 @@ $(() => {
         });
     } else {
         show_heatmap_button.classList.add('invisible');
+        document.getElementById('expl-heatmap-highlight').classList.add('invisible');
     }
 
 
@@ -261,7 +262,6 @@ $(() => {
     }
     
     // expl-start modal to expl-mammogram =================
-
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-start-super'),
         current_target_object: null,
@@ -276,7 +276,6 @@ $(() => {
     });
 
     // expl-start modal to expl-AI modal ==================
-
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-mammogram'),
         current_target_object: document.getElementById('mamm_img'),
@@ -291,7 +290,6 @@ $(() => {
     });
 
     // expl-AI modal to expl-AI_suggestion modal ==========
-
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-AI'),
         current_target_object: document.getElementById('show_AI_button'),
@@ -306,72 +304,120 @@ $(() => {
     }, show_AI_suggestion // Includes default button behavior of show-AI-button
     ); 
 
-    // expl-AI_suggestion modal to expl-PD_info modal =====
 
-    setModalEventListeners({
-        current_modal_object: document.getElementById('expl-AI_suggestion'),
-        current_target_object: document.getElementById('AI_suggestion'),
-        current_highlight: document.getElementById('expl-AI_suggestion-highlight'),
-        current_highlight_class: 'highlighted-clear',
-        current_modal_name: 'expl-AI_suggestion',
-        next_modal_object: document.getElementById('expl-PD_info'),
-        next_target_object: document.getElementById('show_PD_info'),
-        next_highlight: document.getElementById('expl-PD_info-highlight'),
-        next_highlight_class: 'highlighted-more-blue',
-        target_type_is_button: true
+    // HANDLING CATEGORY/TYPE SPECIFIC MODALS =============
+
+    if (participant_type === PARTICIPANT_TYPES.TYPE_A || category_type === CATEGORY_TYPES.PRIMING) {
+        // expl-AI_suggestion modal to expl-PD_info modal =====
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-AI_suggestion'),
+            current_target_object: document.getElementById('AI_suggestion'),
+            current_highlight: document.getElementById('expl-AI_suggestion-highlight'),
+            current_highlight_class: 'highlighted-clear',
+            current_modal_name: 'expl-AI_suggestion',
+            next_modal_object: document.getElementById('expl-PD_info'),
+            next_target_object: document.getElementById('show_PD_info'),
+            next_highlight: document.getElementById('expl-PD_info-highlight'),
+            next_highlight_class: 'highlighted-more-blue',
+            target_type_is_button: true
+        }
+        ); 
+
+        // expl-PD_info modal to expl-AI_info modal ===========
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-PD_info'),
+            current_target_object: document.getElementById('show_PD_info'),
+            current_highlight: document.getElementById('expl-PD_info-highlight'),
+            current_highlight_class: 'highlighted-more-blue',
+            current_modal_name: 'expl-PD_info',
+            next_modal_object: document.getElementById('expl-AI_info'),
+            next_target_object: document.getElementById('show_AI_info'),
+            next_highlight: document.getElementById('expl-AI_info-highlight'),
+            next_highlight_class: 'highlighted-more-blue',
+            target_type_is_button: true
+        }
+        ); 
+
+        // expl-AI_info modal to expl-heatmap modal ===========
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-AI_info'),
+            current_target_object: document.getElementById('show_AI_info'),
+            current_highlight: document.getElementById('expl-AI_info-highlight'),
+            current_highlight_class: 'highlighted-more-blue',
+            current_modal_name: 'expl-AI_info',
+            next_modal_object: document.getElementById('expl-heatmap'),
+            next_target_object: document.getElementById('show_heatmap_button'),
+            next_highlight: document.getElementById('expl-heatmap-highlight'),
+            next_highlight_class: 'highlighted-blue',
+            target_type_is_button: true
+        }
+        ); 
+
+        // expl_heatmap modal to expl_patient modal ===========
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-heatmap'),
+            current_target_object: document.getElementById('show_heatmap_button'),
+            current_highlight: document.getElementById('expl-heatmap-highlight'),
+            current_highlight_class: 'highlighted-blue',
+            current_modal_name: 'expl-heatmap',
+            next_modal_object: document.getElementById('expl-patient'),
+            next_target_object: document.getElementById('patient_info'),
+            next_highlight: document.getElementById('expl-patient-highlight'),
+            next_highlight_class: 'highlighted-clear',
+            target_type_is_button: false
+        }, show_heatmap
+        ); 
+
+    } else if (participant_type === PARTICIPANT_TYPES.TYPE_B) {
+
+        // expl-AI_suggestion modal to expl-heatmap modal =====
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-AI_suggestion'),
+            current_target_object: document.getElementById('AI_suggestion'),
+            current_highlight: document.getElementById('expl-AI_suggestion-highlight'),
+            current_highlight_class: 'highlighted-clear',
+            current_modal_name: 'expl-AI_suggestion',
+            next_modal_object: document.getElementById('expl-heatmap'),
+            next_target_object: document.getElementById('show_heatmap_button'),
+            next_highlight: document.getElementById('expl-heatmap-highlight'),
+            next_highlight_class: 'highlighted-blue',
+            target_type_is_button: true
+        }
+        ); 
+
+        // expl_heatmap modal to expl_patient modal ===========
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-heatmap'),
+            current_target_object: document.getElementById('show_heatmap_button'),
+            current_highlight: document.getElementById('expl-heatmap-highlight'),
+            current_highlight_class: 'highlighted-blue',
+            current_modal_name: 'expl-heatmap',
+            next_modal_object: document.getElementById('expl-patient'),
+            next_target_object: document.getElementById('patient_info'),
+            next_highlight: document.getElementById('expl-patient-highlight'),
+            next_highlight_class: 'highlighted-clear',
+            target_type_is_button: false
+        }, show_heatmap
+        ); 
+
+    } else {
+        // expl-AI_suggestion modal to expl-patient modal =====
+        setModalEventListeners({
+            current_modal_object: document.getElementById('expl-AI_suggestion'),
+            current_target_object: document.getElementById('AI_suggestion'),
+            current_highlight: document.getElementById('expl-AI_suggestion-highlight'),
+            current_highlight_class: 'highlighted-clear',
+            current_modal_name: 'expl-AI_suggestion',
+            next_modal_object: document.getElementById('expl-patient'),
+            next_target_object: document.getElementById('patient_info'),
+            next_highlight: document.getElementById('expl-patient-highlight'),
+            next_highlight_class: 'highlighted-clear',
+            target_type_is_button: false
+        }
+        ); 
     }
-    ); 
-
-    // expl-PD_info modal to expl-AI_info modal ===========
-
-    setModalEventListeners({
-        current_modal_object: document.getElementById('expl-PD_info'),
-        current_target_object: document.getElementById('show_PD_info'),
-        current_highlight: document.getElementById('expl-PD_info-highlight'),
-        current_highlight_class: 'highlighted-more-blue',
-        current_modal_name: 'expl-PD_info',
-        next_modal_object: document.getElementById('expl-AI_info'),
-        next_target_object: document.getElementById('show_AI_info'),
-        next_highlight: document.getElementById('expl-AI_info-highlight'),
-        next_highlight_class: 'highlighted-more-blue',
-        target_type_is_button: true
-    }
-    ); 
-
-    // expl-AI_info modal to expl-heatmap modal ===========
-
-    setModalEventListeners({
-        current_modal_object: document.getElementById('expl-AI_info'),
-        current_target_object: document.getElementById('show_AI_info'),
-        current_highlight: document.getElementById('expl-AI_info-highlight'),
-        current_highlight_class: 'highlighted-more-blue',
-        current_modal_name: 'expl-AI_info',
-        next_modal_object: document.getElementById('expl-heatmap'),
-        next_target_object: document.getElementById('show_heatmap_button'),
-        next_highlight: document.getElementById('expl-heatmap-highlight'),
-        next_highlight_class: 'highlighted-blue',
-        target_type_is_button: true
-    }
-    ); 
-
-    // expl_heatmap modal to expl_patient modal ===========
-
-    setModalEventListeners({
-        current_modal_object: document.getElementById('expl-heatmap'),
-        current_target_object: document.getElementById('show_heatmap_button'),
-        current_highlight: document.getElementById('expl-heatmap-highlight'),
-        current_highlight_class: 'highlighted-blue',
-        current_modal_name: 'expl-heatmap',
-        next_modal_object: document.getElementById('expl-patient'),
-        next_target_object: document.getElementById('patient_info'),
-        next_highlight: document.getElementById('expl-patient-highlight'),
-        next_highlight_class: 'highlighted-clear',
-        target_type_is_button: false
-    }, show_heatmap
-    ); 
 
     // expl_patient modal to expl_nr_left modal ===========
-    
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-patient'),
         current_target_object: document.getElementById('patient_info'),
@@ -386,8 +432,7 @@ $(() => {
     }
     );
 
-    // expl-nr_left modal to expl-classification ==========
-    
+    // expl-nr_left modal to expl-classification ==========  
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-nr_left'),
         current_target_object: document.getElementById('task_counter'),
@@ -402,8 +447,7 @@ $(() => {
     }
     );
 
-    // expl-classification modal to expl-birads ==========
-
+    // expl-classification modal to expl-birads ===========
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-classification'),
         current_target_object: document.getElementById('classification_menu_mid'),
@@ -418,8 +462,7 @@ $(() => {
     }
     );
 
-    // expl-birads modal to expl-submit ==================
-
+    // expl-birads modal to expl-submit ===================
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-birads'),
         current_target_object: document.getElementById('show_BIRADS_info'),
@@ -434,8 +477,7 @@ $(() => {
     }
     );
     
-    // expl-submit modal to expl-end ====================
-    
+    // expl-submit modal to expl-end ======================
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-submit'),
         current_target_object: document.getElementById('task_submit_button'),
@@ -450,8 +492,7 @@ $(() => {
     }
     );
     
-    // expl-end Final ===================================
-
+    // expl-end Final =====================================
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-end-super'),
         current_target_object: null,
