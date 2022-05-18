@@ -22,6 +22,21 @@
 			const CATEGORY_TYPES = JSON.parse('<%- JSON.stringify(CATEGORY_TYPES)%>');
 		</script>
 
+		<!-- Zoomable/Panable Mammogram Modal -->
+		<div class="mammogram-modal hidden" id="mammogram-modal">
+			<button class="mammogram-modal-button" id="mammogram-modal-close">&#10006;</button>
+			<button class="mammogram-modal-button" id="mammogram-modal-reset">Reset</button>
+			<button class="heatmap_button_modal" id="show_heatmap_button_modal">Show Heatmap</button>
+			<button class="heatmap_button_modal hidden" id="hide_heatmap_button_modal">Hide Heatmap</button>
+			<div id="mammogram-modal-content">
+				<div id="zoomable-container">
+					<img ondragstart="return false" class="modal_mammogram" id="mamm_img_modal" src="/img/mammograms/<%=task.mamm_file_name%>">
+					<img ondragstart="return false" class="modal_mammogram hidden" id="heatmap_img_modal" src="/img/mammograms/<%=task.heat_file_name%>">
+				</div>
+			</div>
+		</div>
+
+		<!-- Task Page Body -->
         <div id="body">
 
 			<h2 id="task_counter"><%= classification.finished.length + 1 %> / 3</h2>

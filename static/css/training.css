@@ -441,10 +441,6 @@ button:hover {
     bottom: 250px;
 }
 
-#expl-end {
-
-}
-
 /* HANDLING MODAL ANIMATIONS ---------------------------------- */
 
 @keyframes fade-in {
