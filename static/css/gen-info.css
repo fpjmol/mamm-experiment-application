@@ -6,3 +6,7 @@ h3 {
 b {
     font-weight: 800;
 }
+
+.button-bar {
+    justify-content: flex-end;
+}

@@ -75,12 +75,14 @@ $(function() {
     var exp_last_wrapper = document.getElementById("control_exp_last_wrapper");
     var exp_last_element = document.getElementById("control_exp_last");
 
-    function handleRadioButtonClick(cad_exp, ai_exp) {
-        if (cad_exp === 1 || ai_exp === 1 || is_exp_last_hidden) {
-            exp_last_wrapper.classList.remove("invisible");
-            exp_last_element.required = true;
+    function handleRadioButtonClick(cad_exp, ai_exp) {   
+        if ((cad_exp === 1 && ai_exp !== null) || (ai_exp === 1 && cad_exp !== null)) {
+            if (is_exp_last_hidden) {
+                exp_last_wrapper.classList.remove("invisible");
+                exp_last_element.required = true;
 
-            is_exp_last_hidden = false;
+                is_exp_last_hidden = false;
+            }
 
         } else {
             // Remove element from viewport
@@ -91,6 +93,7 @@ $(function() {
             exp_last_element.selectedIndex = 0;
             exp_last_element.required = false;
         }
+
     }
 
     var cad_rad = document.forms["control_form"].control_cad_exp
