@@ -35,68 +35,91 @@
 				</div>
 
                 <div class="text-box">
-                    <p>Please enter your email in the box below. If you do <strong>NOT</strong> want to be contacted on this email adress 
-                        after the experiment regarding experiment outcomes, please also tick the checkbox below.</p>
+                    <p>Please enter your email in the box below. This email will only be used for experiment purposes, and <b>will not be associated with data gathered</b>.
 
                     <div class="form-element-wrapper">
                         <label for="email">Email:</label>
                         <input type="email" id="email" name="email" form="control_form" required>
                     </div>
                     
-                    <div id="no-contact-wrapper">
+                    <!-- <div id="no-contact-wrapper">
                         <input type="checkbox" id="no_contact" name="no_contact" form="control_form">
                         <label for="no_contact">I do NOT want to receive updates on the experiment outcomes</label>
-                    </div>
+                    </div> -->
                 </div>
 
                 <form id="control_form">
                     <div class="text-box-wrapper">
                         <div class="text-box">
                             <div class="form-element-wrapper">
-                                <label for="control_profession">Profession:</label>
-                                <select id="control_profession" name="control_profession" required>
-                                    <option value="" disabled selected>Select your option</option>
-                                    <option value="student_related">Student in a medical field related to radiology</option>
-                                    <option value="student_not_related">Student in a medical field not related to radiology</option>
-                                    <option value="radiologist">Radiologist</option>
-                                    <option value="medical_profession">Medical professional in a field other than radiology</option>
-                                    <option value="other">Other</option>
+                                <label for="control_hospital">Hospital Setting:</label>
+                                <select id="control_hospital" name="control_hospital" required>
+                                    <option value="" disabled selected>In what type of hospital setting do you work?</option>
+                                    <option value="academic">Academic Hospital</option>
+                                    <option value="non_academic_private">Non-academic Private Hospital</option>
+                                    <option value="non_academic_public">Non-academic Public Hospital</option>
                                 </select>
                             </div>
-                            
+
                             <div class="form-element-wrapper">
-                                <label for="control_exp_radiology">Experience in Radiology:</label>
-                                <select id="control_exp_radiology" name="control_exp_radiology" required>
-                                    <option value="" disabled selected>Select your option</option>
-                                    <option value="no_experience">No experience</option>
-                                    <option value="less_than_1">Less than 1 year</option>
-                                    <option value="between_1_3">Between 1 and 3 years</option>
-                                    <option value="between_3_10">Between 3 and 10 years</option>
-                                    <option value="more_than_10">More than 10 years</option>
+                                <label for="control_last_mamm">Time since last mammography reading:</label>
+                                <select id="control_last_mamm" name="control_last_mamm" required>
+                                    <option value="" disabled selected>How long ago did you perform your last mammography reading?</option>
+                                    <option value="1_week">Within the last week</option>
+                                    <option value="1_month">Within the last month</option>
+                                    <option value="6_months">Within the last 6 months</option>
+                                    <option value="1_year">Within the last year</option>
+                                    <option value="more_than_1_year">More than a year ago</option>
+                                </select>
+                            </div>
+
+                            <div class="form-element-wrapper">
+                                <label for="control_nr_mamms_weekly">Mammography readings per week:</label>
+                                <select id="control_nr_mamms_weekly" name="control_nr_mamms_weekly" required>
+                                    <option value="" disabled selected>How many mammography readings do you perform per week?</option>
+                                    <option value="less_than_5">Less than 5</option>
+                                    <option value="5_to_10">Between 5 and 10</option>
+                                    <option value="10_to_20">Between 10 and 20</option>
+                                    <option value="20_to_50">Between 20 and 50</option>
+                                    <option value="more_than_50">More than 50</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="text-box">
-                            <div class="form-element-wrapper">
-                                <label for="control_exp_mammography">Experience in Mammography:</label>
-                                <select id="control_exp_mammography" name="control_exp_mammography" required>
-                                    <option value="" disabled selected>Select your option</option>
-                                    <option value="no_experience">No experience</option>
-                                    <option value="less_than_100">Less than 100 mammograms classified</option>
-                                    <option value="between_100_1000">Between 100 and 1000 mammograms classified</option>
-                                    <option value="more_than_1000">More than 1000 mammograms classified</option>
-                                </select>
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="control_cad_exp">Have you ever worked with <b>CAD (Computer Aided Decision)</b> tools before in your work as radiologist?</label>
+                                <div class="radio-button">
+                                    <input type="radio" id="cad_exp_yes" name="control_cad_exp" value="1" required>
+                                    <label for="cad_exp_yes">Yes</label>
+                                </div>
+                                <div class="radio-button">
+                                    <input type="radio" id="cad_exp_no" name="control_cad_exp" value="0">
+                                    <label for="cad_exp_no">No</label>
+                                </div>
                             </div>
 
-                            <div class="form-element-wrapper">
-                                <label for="control_last_time_eval">Time since last mammogram classification:</label>
-                                <select id="control_last_time_eval" name="control_last_time_eval" required>
-                                    <option value="" disabled selected>Select your option</option>
-                                    <option value="no_classification">No previous classification</option>
-                                    <option value="less_than_1">Less than 1 year</option>
-                                    <option value="between_1_2">1 to 2 years</option>
-                                    <option value="more_than_3">3 or more years</option>
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="control_ai_exp">Have you ever worked with specifically <b>AI (Artificial Intelligence) powered</b> tools before in your work as radiologist?</label>
+                                <div class="radio-button">
+                                    <input type="radio" id="ai_exp_yes" name="control_ai_exp" value="1" required>
+                                    <label for="ai_exp_yes">Yes</label>
+                                </div>
+                                <div class="radio-button">
+                                    <input type="radio" id="ai_exp_no" name="control_ai_exp" value="0">
+                                    <label for="ai_exp_no">No</label>
+                                </div>
+                            </div>
+
+                            <div class="form-element-wrapper invisible" id="control_exp_last_wrapper">
+                                <label for="control_exp_last">Time since last CAD/AI tool interaction:</label>
+                                <select id="control_exp_last" name="control_exp_last">
+                                    <option value="" disabled selected>How long ago did you interact with a CAD/AI tool last?</option>
+                                    <option value="1_week">Within the last week</option>
+                                    <option value="1_month">Within the last month</option>
+                                    <option value="6_months">Within the last 6 months</option>
+                                    <option value="1_year">Within the last year</option>
+                                    <option value="more_than_1_year">More than a year ago</option>
                                 </select>
                             </div>
                         </div>

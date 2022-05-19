@@ -221,6 +221,7 @@ app.get('/interface-training/:id', (req, res) => {
             }
 
             res.render('training', page_data)
+            callback(null);
         }
     ], (err) => {
         if (err) {
@@ -481,10 +482,15 @@ app.post("/register_participant", (req, res) => {
         (callback) => {
             console.log("Participant registration received")
 
-            control_profession = req.body.control_profession;
-            control_exp_radiology = req.body.control_exp_radiology;
-            control_exp_mammography = req.body.control_exp_mammography;
-            control_last_time_eval = req.body.control_last_time_eval;
+            control_hospital = req.body.control_hospital;
+            control_last_mamm = req.body.control_last_mamm;
+            control_nr_mamms_weekly = req.body.control_nr_mamms_weekly;
+            control_cad_exp = req.body.control_cad_exp;
+            control_ai_exp = req.body.control_cad_exp;
+            experiment_start_time = req.body.experiment_start_time;
+
+            control_exp_last = req.body.control_exp_last || null;
+
 
             classification = JSON.stringify(utils.initializeClassificationObject());
             
@@ -505,37 +511,34 @@ app.post("/register_participant", (req, res) => {
             // Assignment of initial Experiment Stage
             exp_stage = constants.EXPERIMENT_STAGE.GEN_INFO;
 
-            // Define no_contact
-            if (req.body.no_contact) {
-                no_contact = true;
-            } else {
-                no_contact = false;
-            }
-
             const query = `INSERT INTO participants (
                 email,
-                control_profession, 
-                control_exp_radiology, 
-                control_exp_mammography, 
-                control_last_time_eval,
+                control_hospital, 
+                control_last_mamm, 
+                control_nr_mamms_weekly, 
+                control_cad_exp,
+                control_ai_exp,
+                control_exp_last,
                 classification,
                 participant_type,
                 category_type,
-                no_contact,
+                experiment_start_time,
                 exp_stage
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting participant registration...")
             db.query(query, [
                 email,
-                control_profession, 
-                control_exp_radiology, 
-                control_exp_mammography, 
-                control_last_time_eval,
+                control_hospital, 
+                control_last_mamm, 
+                control_nr_mamms_weekly, 
+                control_cad_exp,
+                control_ai_exp,
+                control_exp_last,
                 classification,
                 participant_type,
                 category_type,
-                no_contact,
+                experiment_start_time,
                 exp_stage
             ], 
             (err, result) => {

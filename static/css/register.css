@@ -9,6 +9,7 @@
 
 #email {
     width: 100%;
+    margin-bottom: 30px;
 }
 
 #no_contact {
@@ -127,4 +128,12 @@
     animation-name: fade-out;
     animation-duration: 500ms;
     animation-fill-mode: forwards;
+}
+
+.text-box-wrapper .form-element-wrapper.radio-element {
+    width: calc(100% - 60px);
+}
+
+label b {
+    font-weight: 800;
 }

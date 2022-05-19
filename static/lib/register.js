@@ -70,14 +70,62 @@ $(function() {
         targetNode.classList.remove("fade-in")
     });
     
+    // Handling Radiobutton Changes
+    var is_exp_last_hidden = true;
+    var exp_last_wrapper = document.getElementById("control_exp_last_wrapper");
+    var exp_last_element = document.getElementById("control_exp_last");
 
+    function handleRadioButtonClick(cad_exp, ai_exp) {
+        if (cad_exp === 1 || ai_exp === 1 || is_exp_last_hidden) {
+            exp_last_wrapper.classList.remove("invisible");
+            exp_last_element.required = true;
+
+            is_exp_last_hidden = false;
+
+        } else {
+            // Remove element from viewport
+            exp_last_wrapper.classList.add("invisible")
+            is_exp_last_hidden = true;
+
+            //Reset to default value (to prevent value being captured if 2x no)
+            exp_last_element.selectedIndex = 0;
+            exp_last_element.required = false;
+        }
+    }
+
+    var cad_rad = document.forms["control_form"].control_cad_exp
+    var ai_rad = document.forms["control_form"].control_ai_exp
+
+    var cad_exp = null;
+    var ai_exp = null;
+
+    cad_rad.forEach(input => {
+        input.addEventListener('change', (input) => {
+            cad_exp = parseInt(input.target.value)
+            handleRadioButtonClick(cad_exp, ai_exp)
+        });
+    });
+
+    ai_rad.forEach(input => {
+        input.addEventListener('change', (input) => {
+            ai_exp = parseInt(input.target.value)
+            handleRadioButtonClick(cad_exp, ai_exp)
+        });
+    });
+
+    
+    
     // Handling Form Submission + Navigation to next page
     document.forms["control_form"].addEventListener('submit', (e) => {
         e.preventDefault();
-
+        
         const data = Object.fromEntries(new FormData(e.target).entries());
+        
+        postable_data = data;
+        
+        const experiment_start_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-        postable_data = data
+        postable_data.experiment_start_time = experiment_start_time
             
         fetch(`${rootURL}/register_participant`, {
             method: 'POST',
