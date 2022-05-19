@@ -159,10 +159,9 @@ $(() => {
     // TOGGLING HEATMAP INSIDE MODAL: -----------------------------------------
 
     var show_heatmap_button_modal = document.getElementById("show_heatmap_button_modal");
+    var hide_heatmap_button_modal = document.getElementById("hide_heatmap_button_modal");
 
     if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants
-        var hide_heatmap_button_modal = document.getElementById("hide_heatmap_button_modal");
-
         var mammogram_image = document.getElementById("mamm_img");
         var heatmap_image = document.getElementById("heatmap_img");
         
@@ -214,10 +213,9 @@ $(() => {
     // TOGGLING HEATMAP: ------------------------------------------------------
 
     var show_heatmap_button = document.getElementById("show_heatmap_button");
+    var hide_heatmap_button = document.getElementById("hide_heatmap_button");
 
     if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants
-        var hide_heatmap_button = document.getElementById("hide_heatmap_button");
-
         var mammogram_image = document.getElementById("mamm_img");
         var heatmap_image = document.getElementById("heatmap_img");
         
@@ -226,7 +224,9 @@ $(() => {
 
         show_heatmap_button.addEventListener('click', () => {
             show_heatmap_button.classList.add('hidden');
+            show_heatmap_button_modal.classList.add('hidden');
             hide_heatmap_button.classList.remove('hidden');
+            hide_heatmap_button_modal.classList.remove('hidden');
 
             mammogram_image.classList.add('hidden');
             mammogram_image_modal.classList.add('hidden');
@@ -245,7 +245,9 @@ $(() => {
             time_heatmap_end = new Date().getTime();
 
             hide_heatmap_button.classList.add('hidden');
+            hide_heatmap_button_modal.classList.add('hidden');
             show_heatmap_button.classList.remove('hidden');
+            show_heatmap_button_modal.classList.remove('hidden');
 
             heatmap_image.classList.add('hidden');
             heatmap_image_modal.classList.add('hidden');

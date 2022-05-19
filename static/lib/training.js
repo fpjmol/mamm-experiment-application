@@ -47,25 +47,194 @@ $(() => {
     matchSize(document.getElementById('expl-BIRADS-highlight'), document.getElementById('show_BIRADS_info'))
 
 
+    // MAMMOGRAM MODAL: -------------------------------------------------------
+    
+    // OPENING/CLOSING MODAL ======================
+    var mamm_modal = document.getElementById("mammogram-modal");
+
+    document.getElementById("mamm_img").addEventListener('click', () => {
+        mamm_modal.classList.remove('hidden');
+    });
+
+    document.getElementById("heatmap_img").addEventListener('click', () => {
+        mamm_modal.classList.remove('hidden');
+    });
+
+    document.getElementById("mammogram-modal-close").addEventListener('click', () => {
+        mamm_modal.classList.add('hidden');
+    });
+
+    // HANDLING ZOOMING ===========================
+    var container = document.getElementById("zoomable-container");
+    var zoom = 1;
+    const ZOOM_SPEED = 0.1;
+
+    document.addEventListener("wheel", function(e) {  
+        
+        if (e.deltaY > 0) {
+            if (zoom >= 0.3) {    
+                container.style.transform = `scale(${zoom -= ZOOM_SPEED})`;  
+            }
+        } else{    
+            container.style.transform = `scale(${zoom += ZOOM_SPEED})`;  
+        }
+
+    });
+
+    // HANDLING PANNING ===========================
+    function hasTouch() {
+        return 'ontouchstart' in document.documentElement;
+    }
+
+    var img_ele = null,
+        has_reset = false,
+        event_start = hasTouch() ? 'touchstart' : 'mousedown',
+        event_move = hasTouch() ? 'touchmove' : 'mousemove',
+        event_end = hasTouch() ? 'touchend' : 'mouseup';
+    // console.log(event_start + "|" + event_move + "|" + event_end);
+
+    document.getElementById("mammogram-modal-reset").addEventListener('click', () => {
+        // Reset Zoom
+        zoom = 1
+        container.style.transform = `scale(${zoom})`; 
+        has_reset = true;
+
+        // Reset img position        
+        img_ele = null;
+
+        var mamm_img = document.getElementById("mamm_img_modal")
+        var heatmap_img = document.getElementById("heatmap_img_modal")
+
+        mamm_img.style.left = '0px';
+        mamm_img.style.top = '0px';
+
+        heatmap_img.style.left = '0px';
+        heatmap_img.style.top = '0px';
+    });
+
+    function start_drag(event) {
+        var x_cursor = hasTouch() ? event.changedTouches[0].clientX : event.clientX,
+            y_cursor = hasTouch() ? event.changedTouches[0].clientY : event.clientY;
+
+        img_ele = this;
+        
+        if (zoom == 1 && !has_reset) {
+            x_img_ele = x_cursor - (img_ele.offsetLeft + 302);
+        } else {
+            x_img_ele = x_cursor - img_ele.offsetLeft;
+        }   
+        y_img_ele = y_cursor - img_ele.offsetTop;
+
+        // console.log("start drag");
+    }
+
+    function stop_drag() {
+      img_ele = null;
+    //   console.log("stop drag");
+    }
+
+    function while_drag(event) {
+        var x_cursor = hasTouch() ? event.changedTouches[0].clientX : event.clientX,
+            y_cursor = hasTouch() ? event.changedTouches[0].clientY : event.clientY;
+
+        if (img_ele !== null) {
+            img_ele.style.left = (x_cursor - x_img_ele) + 'px';
+            img_ele.style.top = (y_cursor - y_img_ele) + 'px';
+            // console.log('dragging > img_left:' + img_ele.style.left + ' | img_top: ' + img_ele.style.top);
+        }
+    }
+
+    document.getElementById('mamm_img_modal').addEventListener(event_start, start_drag);
+    document.getElementById('heatmap_img_modal').addEventListener(event_start, start_drag);
+    document.getElementById('mammogram-modal-content').addEventListener(event_move, while_drag);
+    document.getElementById('mammogram-modal-content').addEventListener(event_end, stop_drag);
+
+    // TOGGLING HEATMAP INSIDE MODAL: -----------------------------------------
+
+    var show_heatmap_button_modal = document.getElementById("show_heatmap_button_modal");
+    var hide_heatmap_button_modal = document.getElementById("hide_heatmap_button_modal");
+
+    if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants
+        var mammogram_image = document.getElementById("mamm_img");
+        var heatmap_image = document.getElementById("heatmap_img");
+        
+        var mammogram_image_modal = document.getElementById("mamm_img_modal");
+        var heatmap_image_modal = document.getElementById("heatmap_img_modal");
+
+        show_heatmap_button_modal.addEventListener('click', () => {
+            show_heatmap_button_modal.classList.add('hidden');
+            show_heatmap_button.classList.add('hidden');
+            hide_heatmap_button_modal.classList.remove('hidden');
+            hide_heatmap_button.classList.remove('hidden');
+
+            mammogram_image.classList.add('hidden');
+            mammogram_image_modal.classList.add('hidden');
+            heatmap_image.classList.remove('hidden');
+            heatmap_image_modal.classList.remove('hidden');
+
+            heatmap_image_modal.style.left = mammogram_image_modal.style.left;
+            heatmap_image_modal.style.top = mammogram_image_modal.style.top;
+
+            total_visits_heatmap ++;
+            time_heatmap_start = new Date().getTime();
+            time_heatmap_end = null;
+        });
+
+        hide_heatmap_button_modal.addEventListener('click', () => {
+            time_heatmap_end = new Date().getTime();
+
+            hide_heatmap_button_modal.classList.add('hidden');
+            hide_heatmap_button.classList.add('hidden');
+            show_heatmap_button_modal.classList.remove('hidden');
+            show_heatmap_button.classList.remove('hidden');
+
+            heatmap_image.classList.add('hidden');
+            heatmap_image_modal.classList.add('hidden');
+            mammogram_image.classList.remove('hidden');
+            mammogram_image_modal.classList.remove('hidden');
+
+            mammogram_image_modal.style.left = heatmap_image_modal.style.left;
+            mammogram_image_modal.style.top = heatmap_image_modal.style.top;
+
+            total_time_heatmap += (time_heatmap_end - time_heatmap_start)
+        });
+    } else {
+        show_heatmap_button_modal.classList.add('invisible');
+    }
+
+
     // TOGGLING HEATMAP: ------------------------------------------------------
 
     var show_heatmap_button = document.getElementById("show_heatmap_button");
+    var hide_heatmap_button = document.getElementById("hide_heatmap_button");
+    
+    var mammogram_image = document.getElementById("mamm_img");
+    var heatmap_image = document.getElementById("heatmap_img");
+    
+    var mammogram_image_modal = document.getElementById("mamm_img_modal");
+    var heatmap_image_modal = document.getElementById("heatmap_img_modal");
+
     var first_heatmap_toggle = true;
 
-    function show_heatmap() {
+    function show_heatmap() { // Defined as separate function for execution in cycleToNextExplanationModal()
         show_heatmap_button.classList.add('hidden');
+        show_heatmap_button_modal.classList.add('hidden');
         hide_heatmap_button.classList.remove('hidden');
+        hide_heatmap_button_modal.classList.remove('hidden');
 
         mammogram_image.classList.add('hidden');
+        mammogram_image_modal.classList.add('hidden');
         heatmap_image.classList.remove('hidden');
+        heatmap_image_modal.classList.remove('hidden');
+
+        heatmap_image_modal.style.left = mammogram_image_modal.style.left;
+        heatmap_image_modal.style.top = mammogram_image_modal.style.top;
+
         first_heatmap_toggle = false;
     }
 
     if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants
-        var hide_heatmap_button = document.getElementById("hide_heatmap_button");
 
-        var mammogram_image = document.getElementById("mamm_img");
-        var heatmap_image = document.getElementById("heatmap_img");
 
         show_heatmap_button.addEventListener('click', () => {
             if (first_heatmap_toggle) {
@@ -90,10 +259,14 @@ $(() => {
 
         hide_heatmap_button.addEventListener('click', () => {
             hide_heatmap_button.classList.add('hidden');
+            hide_heatmap_button_modal.classList.add('hidden');
             show_heatmap_button.classList.remove('hidden');
+            show_heatmap_button_modal.classList.remove('hidden');
 
             heatmap_image.classList.add('hidden');
+            heatmap_image_modal.classList.add('hidden');
             mammogram_image.classList.remove('hidden');
+            mammogram_image_modal.classList.remove('hidden');
         });
     } else {
         show_heatmap_button.classList.add('invisible');
