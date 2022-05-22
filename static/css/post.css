@@ -1,0 +1,100 @@
+.text-box-wrapper .form-element-wrapper {
+    padding: 30px 30px;
+    width: 100%;
+}
+
+.text-box-wrapper .form-element-wrapper label {
+    margin-bottom: 1%;
+}
+
+#post-submit-button {
+    border:none;
+    color: black;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 180px;
+    height: 85px;
+    background-color: orange;
+
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+#post-submit-button:hover {
+    cursor: pointer;
+    color:rgba(255,255,255,0.8);
+    box-shadow: inset 0 0 10px rgb(100,100,100);
+}
+
+#post_ai_trust_textbox {
+    margin-top: 1%;
+}
+
+.form-element-wrapper {
+    width: calc(100% - 60px);
+}
+
+.form-element-wrapper .radio-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.radio-label {
+    margin: 26px 0;
+}
+
+.radio-label b {
+    font-weight: 800;
+}
+
+.form-element-wrapper {
+    margin-bottom: 26px;
+}
+
+.form-element-wrapper .radio-button label {
+    font-weight: 300;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+.form-element-wrapper .radio-button input {
+    height: 20px;
+    width: 20px;
+}
+
+.form-element-wrapper .radio-button input:hover {
+    cursor: pointer;
+}
+
+.form-element-wrapper .radio-button label:hover {
+    cursor:pointer;
+}
+
+.radio-element-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.radio-button {
+    width: 150px;
+}
+
+#receive_update {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+#receive-update-wrapper {
+    display: flex;
+    margin: 0 0 26px 30px;
+    align-items: center;
+}

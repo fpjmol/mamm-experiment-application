@@ -1,0 +1,233 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link rel="stylesheet" type="text/css" href="/css/post.css">
+
+		<script src="<%= JQUERY_URL%>"></script>
+		<script type="text/javascript" src="/lib/post.js"></script>
+	</head>
+
+    <!-- Injecting EJS variables into JS environment -->
+    <script> 
+        var participant_id = '<%= participant_id %>';
+        var participant_type = '<%= participant_type %>';
+        var category_type = '<%= category_type %>';
+
+        const PARTICIPANT_TYPES = JSON.parse('<%- JSON.stringify(PARTICIPANT_TYPES)%>');
+        const CATEGORY_TYPES = JSON.parse('<%- JSON.stringify(CATEGORY_TYPES)%>');
+    </script>
+
+
+	<body>
+        <div id="header-wrapper">
+			<div id="header-content">
+				<h1>A few final questions</h1>
+                <img class="logo" id="vu-logo" src="/img/misc/VU-logo-nobg.svg">
+			</div>
+		</div> 
+
+		<div id="body-wrapper">
+			<div id="body-content">
+				<div class="text-box">
+					<p>You're almost done! We have a few final questions for you:</p>
+				</div>
+
+                <form id="post_form">
+                    
+                        <div class="text-box" id="post_ai_trust_textbox">
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="post_ai_trust">How much did you <b>trust</b> the AI-suggestion to be correct during the experiment?</label>
+                                <div class="radio-element-wrapper">
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_1" name="post_ai_trust" value="strong_distrust" required>
+                                        <label for="post_ai_trust_1">Strongly Distrust</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_2" name="post_ai_trust" value="distrust">
+                                        <label for="post_ai_trust_2">Distrust</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_3" name="post_ai_trust" value="somewhat_distrust">
+                                        <label for="post_ai_trust_3">Somewhat Distrust</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_4" name="post_ai_trust" value="undecided">
+                                        <label for="post_ai_trust_4">Undecided</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_5" name="post_ai_trust" value="somewhat_trust">
+                                        <label for="post_ai_trust_5">Somewhat Trust</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_6" name="post_ai_trust" value="trust">
+                                        <label for="post_ai_trust_6">Trust</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_trust_7" name="post_ai_trust" value="strongly_trust">
+                                        <label for="post_ai_trust_7">Strongly Trust</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-box" id="post_ai_usefulness_textbox">
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="post_ai_usefulness">How useful was the <b>AI-suggestion</b> for you during the experiment?</label>
+                                <div class="radio-element-wrapper">
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_1" name="post_ai_usefulness" value="very_useful" required>
+                                        <label for="post_ai_usefulness_1">Very Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_2" name="post_ai_usefulness" value="useful">
+                                        <label for="post_ai_usefulness_2">Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_3" name="post_ai_usefulness" value="somewhat_useful">
+                                        <label for="post_ai_usefulness_3">Somewhat Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_4" name="post_ai_usefulness" value="undecided">
+                                        <label for="post_ai_usefulness_4">Undecided</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_5" name="post_ai_usefulness" value="somewhat_useless">
+                                        <label for="post_ai_usefulness_5">Somewhat Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_6" name="post_ai_usefulness" value="useless">
+                                        <label for="post_ai_usefulness_6">Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_ai_usefulness_7" name="post_ai_usefulness" value="very_useless">
+                                        <label for="post_ai_usefulness_7">Very Useless</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-box" id="post_heatmap_usefulness_textbox">
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="post_heatmap_usefulness">How useful was the <b>heatmap</b> for you during the experiment?</label>
+                                <div class="radio-element-wrapper">
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_1" name="post_heatmap_usefulness" value="very_useful" required>
+                                        <label for="post_heatmap_usefulness_1">Very Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_2" name="post_heatmap_usefulness" value="useful">
+                                        <label for="post_heatmap_usefulness_2">Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_3" name="post_heatmap_usefulness" value="somewhat_useful">
+                                        <label for="post_heatmap_usefulness_3">Somewhat Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_4" name="post_heatmap_usefulness" value="undecided">
+                                        <label for="post_heatmap_usefulness_4">Undecided</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_5" name="post_heatmap_usefulness" value="somewhat_useless">
+                                        <label for="post_heatmap_usefulness_5">Somewhat Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_6" name="post_heatmap_usefulness" value="useless">
+                                        <label for="post_heatmap_usefulness_6">Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_heatmap_usefulness_7" name="post_heatmap_usefulness" value="very_useless">
+                                        <label for="post_heatmap_usefulness_7">Very Useless</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-box" id="post_prob_distr_usefulness_textbox">
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="post_prob_distr_usefulness">How useful was the AI's <b>Probability Distribution</b> information for you during the experiment?</label>
+                                <div class="radio-element-wrapper">
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_1" name="post_prob_distr_usefulness" value="very_useless" required>
+                                        <label for="post_prob_distr_usefulness_1">Very Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_2" name="post_prob_distr_usefulness" value="useless">
+                                        <label for="post_prob_distr_usefulness_2">Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_3" name="post_prob_distr_usefulness" value="somewhat_useless">
+                                        <label for="post_prob_distr_usefulness_3">Somewhat Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_4" name="post_prob_distr_usefulness" value="undecided">
+                                        <label for="post_prob_distr_usefulness_4">Undecided</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_5" name="post_prob_distr_usefulness" value="somewhat_useful">
+                                        <label for="post_prob_distr_usefulness_5">Somewhat Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_6" name="post_prob_distr_usefulness" value="useful">
+                                        <label for="post_prob_distr_usefulness_6">Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_prob_distr_usefulness_7" name="post_prob_distr_usefulness" value="very_useful">
+                                        <label for="post_prob_distr_usefulness_7">Very Useful</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-box" id="post_contr_attr_usefulness_textbox">
+                            <div class="form-element-wrapper radio-element">
+                                <label class="radio-label" for="post_contr_attr_usefulness">How useful was the AI's <b>Attribute</b> information for you during the experiment?</label>
+                                <div class="radio-element-wrapper">
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_1" name="post_contr_attr_usefulness" value="very_useful" required>
+                                        <label for="post_contr_attr_usefulness_1">Very Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_2" name="post_contr_attr_usefulness" value="useful">
+                                        <label for="post_contr_attr_usefulness_2">Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_3" name="post_contr_attr_usefulness" value="somewhat_useful">
+                                        <label for="post_contr_attr_usefulness_3">Somewhat Useful</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_4" name="post_contr_attr_usefulness" value="undecided">
+                                        <label for="post_contr_attr_usefulness_4">Undecided</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_5" name="post_contr_attr_usefulness" value="somewhat_useless">
+                                        <label for="post_contr_attr_usefulness_5">Somewhat Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_6" name="post_contr_attr_usefulness" value="useless">
+                                        <label for="post_contr_attr_usefulness_6">Useless</label>
+                                    </div>
+                                    <div class="radio-button">
+                                        <input type="radio" id="post_contr_attr_usefulness_7" name="post_contr_attr_usefulness" value="very_useless">
+                                        <label for="post_contr_attr_usefulness_7">Very Useless</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                </form>
+
+                <div class="text-box">
+                    <p>Finally, do you want to receive an update via email containing general insights into the results and findings from this experiment? If so, please <b>check the box below</b>.
+                    <div id="receive-update-wrapper">
+                        <input type="checkbox" id="receive_update" name="receive_update" form="post_form">
+                        <label for="receive_update">I want to receive an update on the experiment insights and findings.</label>
+                    </div>
+                </div>
+
+                <button id="post-submit-button" type="submit" form="post_form">Submit and Continue</button>
+            </div>
+        </div>
+        
+	</body>
+</html>

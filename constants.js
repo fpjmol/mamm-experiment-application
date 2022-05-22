@@ -21,7 +21,8 @@ module.exports = {
         TRAINING: "interface_training",
         BIRADS_VIDEO: "birads_video",
         PRIME_VIDEO: "prime_video",
-        EXP_TASKS: "experiment_tasks"
+        EXP_TASKS: "experiment_tasks",
+        EXP_END: "experiment_end"
     },
 
     MAMM_IMAGE_IDS: [1, 2, 3], // Used in util function for population of user classification object

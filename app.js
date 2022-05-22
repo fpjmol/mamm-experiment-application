@@ -311,7 +311,7 @@ app.get('/experiment/:id', (req, res) => {
                 classification_obj.current = classification_obj.remaining.pop() // Loading new active current
                 callback(null, classification_obj)
             } else {
-                res.redirect('/experiment-end');
+                res.redirect('/post-experiment/' + participant_id);
                 mainCallback(null)
             }
         },
@@ -406,6 +406,43 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
     })
 });
 
+app.get('/post-experiment/:id', (req, res) => {
+    const participant_id = req.params.id;
+
+    async.waterfall([
+        (callback) => {
+            db.query('SELECT participant_type, category_type FROM participants WHERE email  = ?', 
+            [participant_id], 
+                (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve data for ID: " + participant_id)
+                    callback(err)
+                }
+                callback(null, result)
+            });
+        }, (result, callback) => {
+            var fetched_data = result[0];
+
+            var page_data = {
+                participant_id,
+                participant_type: fetched_data.participant_type,
+                category_type: fetched_data.category_type,
+                PARTICIPANT_TYPES: constants.PARTICIPANT_TYPE,
+                CATEGORY_TYPES: constants.CATEGORY_TYPE,
+                JQUERY_URL: constants.JQUERY_CDN_URL
+            }
+
+            res.render('post_experiment', page_data)
+            callback(null)
+        }
+    ], (err) => {
+        if (err) {
+            console.log(err)
+        }
+    });
+
+});
+
 app.get('/experiment-end', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL
@@ -446,6 +483,8 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
         case constants.EXPERIMENT_STAGE.EXP_TASKS:
             join_URL = '/experiment/' + participant_id;
             break;
+        case constants.EXPERIMENT_STAGE.EXP_END:
+            join_URL = '/experiment-end'
     }
 
     if (join_URL) {
@@ -569,14 +608,7 @@ app.post("/save_task", (req, res) => {
     
     async.waterfall([
         (callback) => { // Posting Classification measurements to DB
-            
-            // total_time_heatmap = req.body.total_time_heatmap 
-            // total_visits_heatmap = req.body.total_visits_heatmap
-            // total_time_prob_distr = req.body.total_time_prob_distr
-            // total_visits_prob_distr = req.body.total_visits_prob_distr
-            // total_time_contr_attr = req.body.total_time_contr_attr
-            // total_visits_contr_attr = req.body.total_visits_contr_attr 
-            
+                        
             const query = `INSERT INTO classification (
                 participant_id,
                 task_id,
@@ -696,6 +728,81 @@ app.put("/update_stage/:stage", (req, res) => {
 
 });
 
+app.put('/final_participant_data', (req, res) => {
+    const participant_id = req.body.participant_id;
+    
+    async.waterfall([
+        (callback) => {
+
+            if(req.body.receive_update) {
+                var receive_update = true;
+            } else {
+                var receive_update = false;
+            }
+
+            var post_heatmap_usefulness = req.body.post_heatmap_usefulness || null;
+            var post_prob_distr_usefulness = req.body.post_prob_distr_usefulness || null;
+            var post_contr_attr_usefulness = req.body.post_contr_attr_usefulness || null;
+                       
+            const query = `UPDATE participants 
+            SET post_ai_trust = ?,
+            post_ai_usefulness = ?,
+            post_heatmap_usefulness = ?,
+            post_prob_distr_usefulness = ?,
+            post_contr_attr_usefulness = ?,
+            receive_update = ?,
+            experiment_end_time = ?
+            WHERE email = ?`;
+            
+            console.log("Posting classification measurements...")
+            db.query(query, [
+                req.body.post_ai_trust,
+                req.body.post_ai_usefulness,
+                post_heatmap_usefulness,
+                post_prob_distr_usefulness,
+                post_contr_attr_usefulness,
+                receive_update,
+                req.body.experiment_end_time,
+                participant_id
+            ], 
+            (err, result) => {
+                if (err) {
+                    console.log("Posting participant data failed:")
+                    callback(err)
+                } else {
+                    result_obj ={
+                        measurement_result: result
+                    }
+                    callback(null, result_obj);
+                }
+            });
+        },
+        (result_obj, callback) => {
+            const exp_stage = constants.EXPERIMENT_STAGE.EXP_END;
+            console.log("") // For new line
+            console.log(`Updating stage for ${participant_id}...`)
+        
+            db.query(
+                'UPDATE participants SET exp_stage = ? WHERE email = ?',
+                [exp_stage, participant_id], 
+                (err, result) => {
+                if (err) {
+                    res.status(500).send({ error: "Updating experiment stage after form submission failed."})
+                } else {
+                    console.log(`Updated stage for ${participant_id} to ${exp_stage}`)
+                    result_obj.stage_result = result;
+                    callback(null, result_obj)
+                }
+            });
+        }
+    ], (err, result_obj) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result_obj)
+        }
+    });
+});
 
 // STARTING SERVER ---------------------------------------------------------------------
 
