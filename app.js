@@ -224,7 +224,7 @@ app.get('/interface-training/:id', (req, res) => {
    
 });
 
-app.get('/experiment-start/:id', async (req, res) => {
+app.get('/pre-experiment/:id', async (req, res) => {
     const participant_id = req.params.id;
     
     var category_type = null;
@@ -248,7 +248,7 @@ app.get('/experiment-start/:id', async (req, res) => {
             participant_type = fetched_data.participant_type
             
             if (category_type === constants.CATEGORY_TYPE.EXPLAINABILITY) {
-                res.redirect('/experiment/' + participant_id);
+                res.redirect('/experiment-start/' + participant_id);
             } else if (category_type === constants.CATEGORY_TYPE.PRIMING) {
                 const video_id = constants.VIDEO_SUFFIX[participant_type] // Spoofing a video id to prevent bias
                 res.redirect(`/video/${participant_id}/${video_id}`)
@@ -260,6 +260,17 @@ app.get('/experiment-start/:id', async (req, res) => {
             console.log(err)
         }
     });
+});
+
+app.get('/experiment-start/:id', (req, res) => {
+    const participant_id = req.params.id;
+
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id
+    }
+
+    res.render('experiment_start', page_data);
 });
 
 app.get('/video/:participant_id/:video_id', (req, res) => {
@@ -467,6 +478,9 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
         case constants.EXPERIMENT_STAGE.PRIME_VIDEO:
             const video_id = constants.VIDEO_SUFFIX[participant_type];
             join_URL = '/video/' + participant_id + '/'+ video_id;
+            break;
+        case constants.EXPERIMENT_STAGE.EXP_START:
+            join_URL = '/experiment-start/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.EXP_TASKS:
             join_URL = '/experiment/' + participant_id;
@@ -716,6 +730,44 @@ app.put("/update_stage/:stage", (req, res) => {
         }
     });
 
+});
+
+app.put("/save_tasks_start", (req, res) => {
+    const participant_id = req.body.participant_id;
+    const tasks_start_time = req.body.tasks_start_time;
+
+    console.log("") // For new line
+    console.log(`[${tasks_start_time}]: Participant ${participant_id} is starting tasks...`)
+
+    db.query(
+        'UPDATE participants SET tasks_start_time = ? WHERE email = ?',
+        [tasks_start_time, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: `Saving tasks start time for participant ${participant_id} failed.`})
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+app.put("/save_tasks_end", (req, res) => {
+    const participant_id = req.body.participant_id;
+    const tasks_end_time = req.body.tasks_end_time;
+
+    console.log("") // For new line
+    console.log(`[${tasks_end_time}]: Participant ${participant_id} finished tasks.`)
+
+    db.query(
+        'UPDATE participants SET tasks_end_time = ? WHERE email = ?',
+        [tasks_end_time, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: `Saving tasks end time for participant ${participant_id} failed.`})
+        } else {
+            res.send(result)
+        }
+    });
 });
 
 app.put("/save_training", (req, res) => {

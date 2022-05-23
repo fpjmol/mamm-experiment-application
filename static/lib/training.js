@@ -709,7 +709,7 @@ $(() => {
             if (data.error) {
                 console.error('Error:', data.error);
             } else {                    
-                window.location.replace(`${rootURL}/experiment-start/${participant_id}`)
+                window.location.replace(`${rootURL}/pre-experiment/${participant_id}`)
             }
         })
         .catch((error) => {
