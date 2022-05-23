@@ -211,6 +211,12 @@ button:hover {
     margin: 0;
 }
 
+#AI_suggestion h5 em {
+    font-style: normal;
+    font-weight: 800;
+    color: #179adb;
+}
+
 #AI_suggestion_title_wrapper {
     display: flex;
     align-items: center;
