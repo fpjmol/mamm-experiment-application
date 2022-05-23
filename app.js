@@ -461,9 +461,6 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
         case constants.EXPERIMENT_STAGE.GEN_INFO:
             join_URL = '/registration-successful/' + participant_id;
             break;
-        case constants.EXPERIMENT_STAGE.BIRADS_VIDEO:
-            join_URL = '/birads-video/' + participant_id;
-            break;
         case constants.EXPERIMENT_STAGE.TRAINING:
             join_URL = '/interface-training/' + participant_id;
             break;
@@ -715,6 +712,26 @@ app.put("/update_stage/:stage", (req, res) => {
             res.status(500).send({ error: "Updating experiment stage on page load failed."})
         } else {
             console.log(`Updated stage for ${participant_id} to ${exp_stage}`)
+            res.send(result)
+        }
+    });
+
+});
+
+app.put("/save_training", (req, res) => {
+    const participant_id = req.body.participant_id
+    const total_training_time = req.body.total_training_time
+
+    console.log("") // For new line
+    console.log(`Updating data for ${participant_id}...`)
+
+    db.query(
+        'UPDATE participants SET total_training_time = ? WHERE email = ?',
+        [total_training_time, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: `Updating data for ${participant_id} failed.`})
+        } else {
             res.send(result)
         }
     });
