@@ -168,15 +168,6 @@ app.get('/registration-successful/:id', (req, res) => {
     res.render('generic_info', page_data);
 });
 
-app.get('/birads-video/:id', (req, res) => {
-    var page_data = {
-        JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id: req.params.id
-    }
-    
-    res.render('birads_video', page_data)
-});
-
 app.get('/interface-training/:id', (req, res) => {
     const participant_id = req.params.id;
 
