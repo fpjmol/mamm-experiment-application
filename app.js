@@ -608,7 +608,9 @@ app.post("/save_task", (req, res) => {
     
     async.waterfall([
         (callback) => { // Posting Classification measurements to DB
-                        
+            
+            var participant_birads_classification = JSON.stringify(req.body.birads_classification);
+
             const query = `INSERT INTO classification (
                 participant_id,
                 task_id,
@@ -631,7 +633,7 @@ app.post("/save_task", (req, res) => {
             db.query(query, [
                 req.body.participant_id,
                 req.body.task_id,
-                req.body.birads_classification,
+                participant_birads_classification,
                 req.body.total_time_ai_prediction,
                 req.body.total_time_class_submit,
                 req.body.total_time_birads_expl,

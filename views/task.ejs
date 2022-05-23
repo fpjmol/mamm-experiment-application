@@ -85,8 +85,8 @@
 							<img class="info_icon" id="show_PD_info" src="/img/misc/info.png">
 						</div>
 					</div>	
-					<h5>li: <%= task.ai_classification.li%></h5>
-					<h5>re: <%= task.ai_classification.re%></h5>
+					<h5>Left: <%= task.ai_classification.li%></h5>
+					<h5>Right: <%= task.ai_classification.re%></h5>
 				</div>
 			</div>
 
@@ -106,25 +106,52 @@
 				</div>
 
 				<form id="birads_classification_form">
-					<div class="radio-button">
-						<input type="radio" id="cat1" name="birads_class" value="1" required>
-						<label for="cat1">1</label>
+					<div class="birads_class_row">
+						<h5>Left:</h5>
+						<div class="radio-button">
+							<input type="radio" id="cat1" name="birads_class_left" value="1" required>
+							<label for="cat1">1</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat2" name="birads_class_left" value="2">
+							<label for="cat2">2</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat3" name="birads_class_left" value="3">
+							<label for="cat3">3</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat4" name="birads_class_left" value="4">
+							<label for="cat4">4</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat5" name="birads_class_left" value="5">
+							<label for="cat5">5</label>
+						</div>
 					</div>
-					<div class="radio-button">
-						<input type="radio" id="cat2" name="birads_class" value="2">
-						<label for="cat2">2</label>
-					</div>
-					<div class="radio-button">
-						<input type="radio" id="cat3" name="birads_class" value="3">
-						<label for="cat3">3</label>
-					</div>
-					<div class="radio-button">
-						<input type="radio" id="cat4" name="birads_class" value="4">
-						<label for="cat4">4</label>
-					</div>
-					<div class="radio-button">
-						<input type="radio" id="cat5" name="birads_class" value="5">
-						<label for="cat5">5</label>
+
+					<div class="birads_class_row">
+						<h5>Right:</h5>
+						<div class="radio-button">
+							<input type="radio" id="cat1" name="birads_class_right" value="1" required>
+							<label for="cat1">1</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat2" name="birads_class_right" value="2">
+							<label for="cat2">2</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat3" name="birads_class_right" value="3">
+							<label for="cat3">3</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat4" name="birads_class_right" value="4">
+							<label for="cat4">4</label>
+						</div>
+						<div class="radio-button">
+							<input type="radio" id="cat5" name="birads_class_right" value="5">
+							<label for="cat5">5</label>
+						</div>
 					</div>
 				</form>
 			</div>

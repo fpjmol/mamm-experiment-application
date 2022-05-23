@@ -394,7 +394,13 @@ $(() => {
 
         // Retrieve BIRADS_classification data from form
         const data = Object.fromEntries(new FormData(e.target).entries());
-        birads_classification = parseInt(data.birads_class)
+        birads_classification = {
+            "li": parseInt(data.birads_class_left),
+            "re": parseInt(data.birads_class_right)
+        }
+
+        // Offset total_birads_class_changes by 1 to control for left-right picks:
+        total_birads_class_changes -= 1;
 
         // Preparing measurement data
         var measured_data = {
