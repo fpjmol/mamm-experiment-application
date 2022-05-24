@@ -16,11 +16,18 @@ module.exports = {
         "type_c": "c62uiX55nC"
     },
 
+    VIDEO_LINKS: {
+        "aef2dhv34A": "6So7SXo_-8A",
+        "b3TR298yuBn": "iAoFAQcj990",
+        "b3TR298yuBp": "hdOcoHNEPKc",
+        "c62uiX55nC": "NK1tDF3HRnM"
+    },
+
     EXPERIMENT_STAGE: {
         GEN_INFO: "gen_info",
         TRAINING: "interface_training",
-        BIRADS_VIDEO: "birads_video",
         PRIME_VIDEO: "prime_video",
+        EXP_START: "experiment_start",
         EXP_TASKS: "experiment_tasks",
         EXP_END: "experiment_end"
     },

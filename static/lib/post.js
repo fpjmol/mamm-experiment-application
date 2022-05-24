@@ -1,5 +1,36 @@
 $(function() {
+
+    // CONSTANTS: ------------------------------------------------- 
+
     const rootURL = window.location.protocol + '//' + window.location.host;
+
+
+    // HANDLING TASKS_END_TIME: -----------------------------------
+
+    const tasks_end_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    
+    var putable_data = {
+            participant_id,
+            tasks_end_time
+        }
+
+    fetch(`${rootURL}/save_tasks_end`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(putable_data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+        } 
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    
     
     // Handling elements based on participant_type and category_type
     

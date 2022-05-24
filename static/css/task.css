@@ -211,6 +211,12 @@ button:hover {
     margin: 0;
 }
 
+#AI_suggestion h5 em {
+    font-style: normal;
+    font-weight: 800;
+    color: #179adb;
+}
+
 #AI_suggestion_title_wrapper {
     display: flex;
     align-items: center;
@@ -242,14 +248,14 @@ button:hover {
 
 #classification_title_wrapper {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     width: 100%;
 }
 
 #classification_title_wrapper h4 {
     display: inline-block;
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bolder;
     margin: 10px 0 10px 30px;
 }
@@ -273,8 +279,21 @@ button:hover {
 
 #birads_classification_form {
     display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0;
+}
+
+.birads_class_row {
+    display: flex;
     justify-content: space-evenly;
-    margin: 20px 0 0 0;
+}
+
+.birads_class_row h5 {
+    font-size: 20px;
+    font-weight: bold;
+    width: 60px;
+    text-align: right;
 }
 
 .radio-button {
@@ -282,19 +301,19 @@ button:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
 }
 
 .radio-button label {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bolder;
     margin-top: 5px;
 }
 
 .radio-button input[type=radio] {
-    height: 40px;
-    width: 40px;
+    height: 30px;
+    width: 30px;
     vertical-align: middle;
+    margin: 0;
 }
 
 /* Menu Right ------------------ */

@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/experiment_start.css">
+
+		<script src="<%= JQUERY_URL%>"></script>
+		<script type="text/javascript" src="/lib/experiment_start.js"></script>
+	</head>
+
+    <!-- Injecting EJS variables into JS environment -->
+    <script> 
+        var participant_id = '<%= participant_id %>';
+    </script>
+
+	<body>
+        <div class="super-modal hidden" id="start-modal-super">
+			<div class="starting-modal" id="start-modal">
+				<button class="modal-close" id="start-modal-close">&#10006;</button>
+				<div class="modal-content">
+					<div class="modal-text">
+						<h3>Starting The Experiment</h3>
+						<p>You are about to start the experiment. <br><br><b>Are you in a quiet room? Do you have the next 25-30 minutes uninterrupted?</b><br><br>
+                            If so, press the button below to start the experiment.
+						</p>
+					</div>
+					<button class="modal-continue" id="start-experiment-button">START</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="header-wrapper">
+			<div id="header-content">
+				<h1>Experiment Start</h1>
+			</div>
+		</div> 
+		<div id="body-wrapper">
+			<div id="body-content">
+				<div class="text-box">
+					<p><b>You are about to start the main experiment tasks of mammogram analysis.</b> This will take you approximately 25-30 minutes to complete.<br><br>
+                    We kindly ask you to take at least this estimated amount of time to finish the tasks as mindfully as possible. Before you start, make sure you are <b>in a quiet room without any distractions.</b></p>
+				</div>
+
+				<div class="text-box">
+					<p><b>NOTE: once you've finished a task and submitted it, you cannot go back</b> to that task. So, make sure you spend enough time on a task before submitting.</p>
+				</div>
+
+                <div class="text-box">
+					<p>Press the CONTINUE button below to start the experiment.</p>
+				</div>
+
+				<div class="button-bar">
+					<button id="continue-experiment-button">continue</button>
+				</div>			
+			</div>
+		</div>        
+	</body>
+</html>

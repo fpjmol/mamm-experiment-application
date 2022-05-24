@@ -6,11 +6,14 @@ const async = require('async')
 const constants = require('./constants')
 const utils = require('./utils')
 const favicon = require('serve-favicon')
+var cors = require('cors')
+var SimpleCrypto = require("simple-crypto-js").default
 
 const app = express();
 
 app.use(favicon(__dirname + '/static/img/favicon.ico'))
 app.use(cookieParser())
+app.use(cors())
 
 const mysql = require('mysql2');
 
@@ -51,6 +54,7 @@ var p_type_determinant = {
 }
 
 var category_bool_is_priming = true;
+var video_bool_is_pos = true;
 
 
 // Supporting Functions -----------------------------------------
@@ -84,6 +88,9 @@ function flipCategoryBool() {
     category_bool_is_priming = !category_bool_is_priming
 }
 
+function flipVideoBool() {
+    video_bool_is_pos = !video_bool_is_pos;
+}
 
 // Functions for Server Variables ------------------------------
 
@@ -99,10 +106,12 @@ function initializeServerVariables() {
             } else {
                 p_type_determinant = result[0].p_type_determinant;
                 category_bool_is_priming = result[0].category_bool_is_priming;
-                
+                video_bool_is_pos = result[0].video_bool_is_pos;
+
                 console.log("Retrieving Server Variables succesfull:")
                 console.log(`p_type_determinant: ${JSON.stringify(p_type_determinant)}`)
                 console.log(`category_bool_is_priming: ${category_bool_is_priming}`)
+                console.log(`video_bool_is_pos: ${video_bool_is_pos}`)
             }
     });
 }
@@ -110,10 +119,11 @@ function initializeServerVariables() {
 function saveServerVariables(callback) {
     const server_var_id = 1;
 
-    db.query('UPDATE server SET p_type_determinant = ?, category_bool_is_priming = ? WHERE id_server = ?', 
+    db.query('UPDATE server SET p_type_determinant = ?, category_bool_is_priming = ?, video_bool_is_pos = ? WHERE id_server = ?', 
     [
         JSON.stringify(p_type_determinant),
         category_bool_is_priming,
+        video_bool_is_pos,
         server_var_id
     ], 
         (err, result) => {
@@ -178,15 +188,6 @@ app.get('/registration-successful/:id', (req, res) => {
     res.render('generic_info', page_data);
 });
 
-app.get('/birads-video/:id', (req, res) => {
-    var page_data = {
-        JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id: req.params.id
-    }
-    
-    res.render('birads_video', page_data)
-});
-
 app.get('/interface-training/:id', (req, res) => {
     const participant_id = req.params.id;
 
@@ -243,7 +244,7 @@ app.get('/interface-training/:id', (req, res) => {
    
 });
 
-app.get('/experiment-start/:id', async (req, res) => {
+app.get('/pre-experiment/:id', async (req, res) => {
     const participant_id = req.params.id;
     
     var category_type = null;
@@ -251,7 +252,7 @@ app.get('/experiment-start/:id', async (req, res) => {
 
     async.waterfall([
         (callback) => {
-            db.query('SELECT category_type, participant_type FROM participants WHERE email = ?', 
+            db.query('SELECT category_type, participant_type, video_bool_is_pos FROM participants WHERE email = ?', 
             [participant_id], 
                 (err, result) => {
                 if (err) {
@@ -265,12 +266,23 @@ app.get('/experiment-start/:id', async (req, res) => {
             fetched_data = result[0]
             category_type = fetched_data.category_type
             participant_type = fetched_data.participant_type
+            var video_bool_is_pos = fetched_data.video_bool_is_pos;
             
-            if (category_type === constants.CATEGORY_TYPE.EXPLAINABILITY) {
-                res.redirect('/experiment/' + participant_id);
+            if (category_type === constants.CATEGORY_TYPE.EXPLAINABILITY || participant_type === constants.PARTICIPANT_TYPE.TYPE_C) {
+                res.redirect('/experiment-start/' + participant_id);
             } else if (category_type === constants.CATEGORY_TYPE.PRIMING) {
+
                 const video_id = constants.VIDEO_SUFFIX[participant_type] // Spoofing a video id to prevent bias
-                res.redirect(`/video/${participant_id}/${video_id}`)
+                
+                var participant_data = {
+                    participant_type,
+                    video_bool_is_pos
+                }
+
+                const simpleCrypto = new SimpleCrypto(video_id);
+                const participant_data_encrypted = simpleCrypto.encrypt(participant_data);
+                const uri_data = encodeURIComponent(participant_data_encrypted);
+                res.redirect(`/video/${participant_id}/${video_id}/${uri_data}`)
             }
             callback(null)
         }
@@ -281,14 +293,45 @@ app.get('/experiment-start/:id', async (req, res) => {
     });
 });
 
-app.get('/video/:participant_id/:video_id', (req, res) => {
+app.get('/experiment-start/:id', (req, res) => {
+    const participant_id = req.params.id;
+
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        video_id: req.params.video_id,
-        participant_id: req.params.participant_id
+        participant_id
     }
 
-    // finish rendering correct video (assets in db?)
+    res.render('experiment_start', page_data);
+});
+
+app.get('/video/:participant_id/:video_id/:uri_data', (req, res) => {
+    const video_id = req.params.video_id
+    const uri_data = req.params.uri_data
+
+    // Decrypt uri endoded participant data
+    const simpleCrypto = new SimpleCrypto(video_id)
+    var participant_data = simpleCrypto.decrypt(decodeURIComponent(uri_data));
+
+    // Determine video link
+    switch(participant_data.participant_type) {
+        case constants.PARTICIPANT_TYPE.TYPE_A:
+            var video_link = constants.VIDEO_LINKS.aef2dhv34A;
+            break;
+        case constants.PARTICIPANT_TYPE.TYPE_B:
+            if (participant_data.video_bool_is_pos) {
+                var video_link = constants.VIDEO_LINKS.b3TR298yuBp;
+            } else {
+                var video_link = constants.VIDEO_LINKS.b3TR298yuBn;
+            }
+            break;
+    }
+
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id: req.params.participant_id,
+        video_link
+    }
+
     res.render('video', page_data);
 });
 
@@ -480,15 +523,15 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
         case constants.EXPERIMENT_STAGE.GEN_INFO:
             join_URL = '/registration-successful/' + participant_id;
             break;
-        case constants.EXPERIMENT_STAGE.BIRADS_VIDEO:
-            join_URL = '/birads-video/' + participant_id;
-            break;
         case constants.EXPERIMENT_STAGE.TRAINING:
             join_URL = '/interface-training/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.PRIME_VIDEO:
             const video_id = constants.VIDEO_SUFFIX[participant_type];
             join_URL = '/video/' + participant_id + '/'+ video_id;
+            break;
+        case constants.EXPERIMENT_STAGE.EXP_START:
+            join_URL = '/experiment-start/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.EXP_TASKS:
             join_URL = '/experiment/' + participant_id;
@@ -539,7 +582,7 @@ app.post("/register_participant", (req, res) => {
             experiment_start_time = req.body.experiment_start_time;
 
             control_exp_last = req.body.control_exp_last || null;
-
+            var participant_video_bool = null;
 
             classification = JSON.stringify(utils.initializeClassificationObject());
             
@@ -557,6 +600,12 @@ app.post("/register_participant", (req, res) => {
             // Cyclic assignment of participant types (to force equal distribution)
             participant_type = getCycledElement(category_type);
 
+            // Assignment of video bool based on participant type
+            if (category_type === constants.CATEGORY_TYPE.PRIMING || participant_type === constants.PARTICIPANT_TYPE.TYPE_B) {
+                participant_video_bool = video_bool_is_pos;
+                flipVideoBool();
+            }
+
             // Assignment of initial Experiment Stage
             exp_stage = constants.EXPERIMENT_STAGE.GEN_INFO;
 
@@ -571,9 +620,10 @@ app.post("/register_participant", (req, res) => {
                 classification,
                 participant_type,
                 category_type,
+                video_bool_is_pos,
                 experiment_start_time,
                 exp_stage
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting participant registration...")
             db.query(query, [
@@ -587,6 +637,7 @@ app.post("/register_participant", (req, res) => {
                 classification,
                 participant_type,
                 category_type,
+                participant_video_bool,
                 experiment_start_time,
                 exp_stage
             ], 
@@ -618,7 +669,9 @@ app.post("/save_task", (req, res) => {
     
     async.waterfall([
         (callback) => { // Posting Classification measurements to DB
-                        
+            
+            var participant_birads_classification = JSON.stringify(req.body.birads_classification);
+
             const query = `INSERT INTO classification (
                 participant_id,
                 task_id,
@@ -641,7 +694,7 @@ app.post("/save_task", (req, res) => {
             db.query(query, [
                 req.body.participant_id,
                 req.body.task_id,
-                req.body.birads_classification,
+                participant_birads_classification,
                 req.body.total_time_ai_prediction,
                 req.body.total_time_class_submit,
                 req.body.total_time_birads_expl,
@@ -732,6 +785,64 @@ app.put("/update_stage/:stage", (req, res) => {
             res.status(500).send({ error: "Updating experiment stage on page load failed."})
         } else {
             console.log(`Updated stage for ${participant_id} to ${exp_stage}`)
+            res.send(result)
+        }
+    });
+
+});
+
+app.put("/save_tasks_start", (req, res) => {
+    const participant_id = req.body.participant_id;
+    const tasks_start_time = req.body.tasks_start_time;
+
+    console.log("") // For new line
+    console.log(`[${tasks_start_time}]: Participant ${participant_id} is starting tasks...`)
+
+    db.query(
+        'UPDATE participants SET tasks_start_time = ? WHERE email = ?',
+        [tasks_start_time, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: `Saving tasks start time for participant ${participant_id} failed.`})
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+app.put("/save_tasks_end", (req, res) => {
+    const participant_id = req.body.participant_id;
+    const tasks_end_time = req.body.tasks_end_time;
+
+    console.log("") // For new line
+    console.log(`[${tasks_end_time}]: Participant ${participant_id} finished tasks.`)
+
+    db.query(
+        'UPDATE participants SET tasks_end_time = ? WHERE email = ?',
+        [tasks_end_time, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: `Saving tasks end time for participant ${participant_id} failed.`})
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+app.put("/save_training", (req, res) => {
+    const participant_id = req.body.participant_id
+    const total_training_time = req.body.total_training_time
+
+    console.log("") // For new line
+    console.log(`Updating data for ${participant_id}...`)
+
+    db.query(
+        'UPDATE participants SET total_training_time = ? WHERE email = ?',
+        [total_training_time, participant_id], 
+        (err, result) => {
+        if (err) {
+            res.status(500).send({ error: `Updating data for ${participant_id} failed.`})
+        } else {
             res.send(result)
         }
     });

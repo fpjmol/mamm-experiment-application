@@ -4,6 +4,7 @@ $(() => {
     
     const rootURL = window.location.protocol + '//' + window.location.host;
     const INFO_DISPLAY_TIME = 10000 // in ms
+    const TRAINING_START_TIME = new Date().getTime();
 
 
     // UPDATING EXPERIMENT STAGE: ---------------------------------------------
@@ -685,6 +686,37 @@ $(() => {
     document.forms["birads_classification_form"].addEventListener('submit', (e) => {
         e.preventDefault();
 
-        window.location.replace(`${rootURL}/experiment-start/${participant_id}`)
+        // Calculate total task time until submission
+        const TRAINING_END_TIME = new Date().getTime();
+        total_training_time = TRAINING_END_TIME - TRAINING_START_TIME;
+
+        // Populate Postable Data Object
+        var postable_data = {
+            participant_id, 
+            total_training_time
+        }
+        
+        // Sending Put Request
+        fetch(`${rootURL}/save_training`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postable_data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+            } else {                    
+                window.location.replace(`${rootURL}/pre-experiment/${participant_id}`)
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+
+        
     });
 });

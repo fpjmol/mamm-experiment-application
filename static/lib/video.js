@@ -1,6 +1,11 @@
 $(function() {
 
+    // CONSTANTS: ---------------------------------------------------------------
+
     const rootURL = window.location.protocol + '//' + window.location.host;
+
+
+    // UPDATING STAGE: ----------------------------------------------------------
 
     postable_data = {id:participant_id}
 
@@ -22,6 +27,7 @@ $(function() {
     .catch((error) => {
         console.error('Error:', error);
     });
+
 
 
 });
