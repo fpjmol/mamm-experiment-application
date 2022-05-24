@@ -6,11 +6,14 @@ const async = require('async')
 const constants = require('./constants')
 const utils = require('./utils')
 const favicon = require('serve-favicon')
+var cors = require('cors')
+var SimpleCrypto = require("simple-crypto-js").default
 
 const app = express();
 
 app.use(favicon(__dirname + '/static/img/favicon.ico'))
 app.use(cookieParser())
+app.use(cors())
 
 const mysql = require('mysql2');
 
@@ -41,6 +44,7 @@ var p_type_determinant = {
 }
 
 var category_bool_is_priming = true;
+var video_bool_is_pos = true;
 
 
 // Supporting Functions -----------------------------------------
@@ -74,6 +78,9 @@ function flipCategoryBool() {
     category_bool_is_priming = !category_bool_is_priming
 }
 
+function flipVideoBool() {
+    video_bool_is_pos = !video_bool_is_pos;
+}
 
 // Functions for Server Variables ------------------------------
 
@@ -89,10 +96,12 @@ function initializeServerVariables() {
             } else {
                 p_type_determinant = result[0].p_type_determinant;
                 category_bool_is_priming = result[0].category_bool_is_priming;
-                
+                video_bool_is_pos = result[0].video_bool_is_pos;
+
                 console.log("Retrieving Server Variables succesfull:")
                 console.log(`p_type_determinant: ${JSON.stringify(p_type_determinant)}`)
                 console.log(`category_bool_is_priming: ${category_bool_is_priming}`)
+                console.log(`video_bool_is_pos: ${video_bool_is_pos}`)
             }
     });
 }
@@ -100,10 +109,11 @@ function initializeServerVariables() {
 function saveServerVariables(callback) {
     const server_var_id = 1;
 
-    db.query('UPDATE server SET p_type_determinant = ?, category_bool_is_priming = ? WHERE id_server = ?', 
+    db.query('UPDATE server SET p_type_determinant = ?, category_bool_is_priming = ?, video_bool_is_pos = ? WHERE id_server = ?', 
     [
         JSON.stringify(p_type_determinant),
         category_bool_is_priming,
+        video_bool_is_pos,
         server_var_id
     ], 
         (err, result) => {
@@ -232,7 +242,7 @@ app.get('/pre-experiment/:id', async (req, res) => {
 
     async.waterfall([
         (callback) => {
-            db.query('SELECT category_type, participant_type FROM participants WHERE email = ?', 
+            db.query('SELECT category_type, participant_type, video_bool_is_pos FROM participants WHERE email = ?', 
             [participant_id], 
                 (err, result) => {
                 if (err) {
@@ -246,12 +256,23 @@ app.get('/pre-experiment/:id', async (req, res) => {
             fetched_data = result[0]
             category_type = fetched_data.category_type
             participant_type = fetched_data.participant_type
+            var video_bool_is_pos = fetched_data.video_bool_is_pos;
             
-            if (category_type === constants.CATEGORY_TYPE.EXPLAINABILITY) {
+            if (category_type === constants.CATEGORY_TYPE.EXPLAINABILITY || participant_type === constants.PARTICIPANT_TYPE.TYPE_C) {
                 res.redirect('/experiment-start/' + participant_id);
             } else if (category_type === constants.CATEGORY_TYPE.PRIMING) {
+
                 const video_id = constants.VIDEO_SUFFIX[participant_type] // Spoofing a video id to prevent bias
-                res.redirect(`/video/${participant_id}/${video_id}`)
+                
+                var participant_data = {
+                    participant_type,
+                    video_bool_is_pos
+                }
+
+                const simpleCrypto = new SimpleCrypto(video_id);
+                const participant_data_encrypted = simpleCrypto.encrypt(participant_data);
+                const uri_data = encodeURIComponent(participant_data_encrypted);
+                res.redirect(`/video/${participant_id}/${video_id}/${uri_data}`)
             }
             callback(null)
         }
@@ -273,14 +294,34 @@ app.get('/experiment-start/:id', (req, res) => {
     res.render('experiment_start', page_data);
 });
 
-app.get('/video/:participant_id/:video_id', (req, res) => {
-    var page_data = {
-        JQUERY_URL: constants.JQUERY_CDN_URL,
-        video_id: req.params.video_id,
-        participant_id: req.params.participant_id
+app.get('/video/:participant_id/:video_id/:uri_data', (req, res) => {
+    const video_id = req.params.video_id
+    const uri_data = req.params.uri_data
+
+    // Decrypt uri endoded participant data
+    const simpleCrypto = new SimpleCrypto(video_id)
+    var participant_data = simpleCrypto.decrypt(decodeURIComponent(uri_data));
+
+    // Determine video link
+    switch(participant_data.participant_type) {
+        case constants.PARTICIPANT_TYPE.TYPE_A:
+            var video_link = constants.VIDEO_LINKS.aef2dhv34A;
+            break;
+        case constants.PARTICIPANT_TYPE.TYPE_B:
+            if (participant_data.video_bool_is_pos) {
+                var video_link = constants.VIDEO_LINKS.b3TR298yuBp;
+            } else {
+                var video_link = constants.VIDEO_LINKS.b3TR298yuBn;
+            }
+            break;
     }
 
-    // finish rendering correct video (assets in db?)
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id: req.params.participant_id,
+        video_link
+    }
+
     res.render('video', page_data);
 });
 
@@ -531,7 +572,7 @@ app.post("/register_participant", (req, res) => {
             experiment_start_time = req.body.experiment_start_time;
 
             control_exp_last = req.body.control_exp_last || null;
-
+            var participant_video_bool = null;
 
             classification = JSON.stringify(utils.initializeClassificationObject());
             
@@ -549,6 +590,12 @@ app.post("/register_participant", (req, res) => {
             // Cyclic assignment of participant types (to force equal distribution)
             participant_type = getCycledElement(category_type);
 
+            // Assignment of video bool based on participant type
+            if (category_type === constants.CATEGORY_TYPE.PRIMING || participant_type === constants.PARTICIPANT_TYPE.TYPE_B) {
+                participant_video_bool = video_bool_is_pos;
+                flipVideoBool();
+            }
+
             // Assignment of initial Experiment Stage
             exp_stage = constants.EXPERIMENT_STAGE.GEN_INFO;
 
@@ -563,9 +610,10 @@ app.post("/register_participant", (req, res) => {
                 classification,
                 participant_type,
                 category_type,
+                video_bool_is_pos,
                 experiment_start_time,
                 exp_stage
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting participant registration...")
             db.query(query, [
@@ -579,6 +627,7 @@ app.post("/register_participant", (req, res) => {
                 classification,
                 participant_type,
                 category_type,
+                participant_video_bool,
                 experiment_start_time,
                 exp_stage
             ], 

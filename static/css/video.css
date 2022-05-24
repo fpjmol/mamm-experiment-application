@@ -2,3 +2,18 @@ h3 {
     margin: 0;
     padding: 26px 30px;
 }
+
+.button-bar {
+    justify-content: flex-end;
+}
+
+#continue-button-highlight {
+    position:absolute;
+    width: 150px;
+    height: 60px;
+    background-color: rgba(50,50,50,0.7);
+}
+
+#player {
+    margin: 30px 26px;
+}

@@ -12,6 +12,7 @@
 		<!-- Injecting EJS variables into JS environment -->
 		<script> 
 			var participant_id = '<%= participant_id %>';
+			var video_link = '<%= video_link %>';
 		</script>
 
 		<div id="header-wrapper">
@@ -22,14 +23,47 @@
 		<div id="body-wrapper">
 			<div id="body-content">
 				<div class="text-box">
-					<p>Now, before you start with the analysis of mammograms, please watch the video below carefully. After watching the video, you can continue to the analysis.</p>
+					<p>Now, before you start with the analysis of mammograms, please watch the video below carefully. After finishing the video, you can continue to the analysis.</p>
 				</div>
 
 				<div class="text-box">
-					<h3>video ID: <%= video_id %></h3>
+					<div id="player"></div>
+
+					<script>
+						    // Load IFrame Player API asynchonously
+							var tag = document.createElement('script');
+							tag.src = "https://www.youtube.com/iframe_api";
+							var firstScriptTag = document.getElementsByTagName('script')[0];
+							firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+							// Creates an <iframe> (and YouTube player) after the API code downloads
+							var player;
+							function onYouTubeIframeAPIReady() {
+								player = new YT.Player('player', {
+									height: '585',
+									width: '960',
+									videoId: '<%= video_link %>',
+									playerVars: {
+										'playsinline': 1
+									},
+									events: {
+										'onStateChange': onPlayerStateChange
+									}
+								});
+							}
+
+							function onPlayerStateChange(event) {
+								if (event.data == YT.PlayerState.ENDED) {
+									document.getElementById("continue-button-highlight").classList.add("hidden");
+								}
+							}
+					</script>
 				</div>
-			
-				<a href="/experiment-start/<%=participant_id%>">continue</a>
+				
+				<div class="button-bar">
+					<div class="filler-class" id="continue-button-highlight"></div>
+					<a href="/experiment-start/<%=participant_id%>">continue</a>
+				</div>
 			</div>
 		</div>        
 	</body>

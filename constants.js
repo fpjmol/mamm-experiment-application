@@ -17,10 +17,10 @@ module.exports = {
     },
 
     VIDEO_LINKS: {
-        "aef2dhv34A": "https://youtu.be/6So7SXo_-8A",
-        "b3TR298yuBn": "https://youtu.be/iAoFAQcj990",
-        "b3TR298yuBp": "https://youtu.be/hdOcoHNEPKc",
-        "c62uiX55nC": "https://youtu.be/NK1tDF3HRnM"
+        "aef2dhv34A": "6So7SXo_-8A",
+        "b3TR298yuBn": "iAoFAQcj990",
+        "b3TR298yuBp": "hdOcoHNEPKc",
+        "c62uiX55nC": "NK1tDF3HRnM"
     },
 
     EXPERIMENT_STAGE: {
