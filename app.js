@@ -28,21 +28,21 @@ const mysql = require('mysql2');
 
 // SETTINGS FOR HEROKU DB:
 
-const db = mysql.createConnection({
-    user: 'emr0lxlhgjmxblcg',
-    host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-    password: 'tyma6eiq0w7i3fna',
-    database: 'cg511cow0to6am6v'
-})
+// const db = mysql.createConnection({
+//     user: 'emr0lxlhgjmxblcg',
+//     host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+//     password: 'tyma6eiq0w7i3fna',
+//     database: 'cg511cow0to6am6v'
+// })
 
 // SETTINGS FOR HEROKU DB:
 
-// const db = mysql.createConnection({
-//     user: 'experiment',
-//     host: 'localhost',
-//     password: 'CrChb_VWA20gh09dlTGeO',
-//     database: 'db_experiment'
-// })
+const db = mysql.createConnection({
+    user: 'experiment',
+    host: 'localhost',
+    password: 'CrChb_VWA20gh09dlTGeO',
+    database: 'db_experiment'
+})
 
 
 
