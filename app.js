@@ -26,6 +26,15 @@ const mysql = require('mysql2');
 //     database: 'experimentdatadb'
 // })
 
+// SETTINGS FOR IRAN DB:
+
+// const db = mysql.createConnection({
+//     user: 'experiment',
+//     host: '157.90.192.179:3031',
+//     password: 'CrChb_VWA20gh09dlTGeO',
+//     database: 'db_experiment'
+// })
+
 // SETTINGS FOR HEROKU DB:
 
 const db = mysql.createConnection({
