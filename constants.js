@@ -25,6 +25,7 @@ module.exports = {
 
     EXPERIMENT_STAGE: {
         GEN_INFO: "gen_info",
+        GEN_VIDEO: "gen_video",
         TRAINING: "interface_training",
         PRIME_VIDEO: "prime_video",
         EXP_START: "experiment_start",

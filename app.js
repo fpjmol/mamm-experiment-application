@@ -187,9 +187,50 @@ app.get('/registration-successful/:id', (req, res) => {
     res.render('generic_info', page_data);
 });
 
-app.get('/interface-training/:id', (req, res) => {
+app.get('/routing/:id', (req, res) => {
     const participant_id = req.params.id;
 
+    async.waterfall([
+        (callback) => {
+            db.query('SELECT category_type FROM participants WHERE email  = ?', 
+            [participant_id], 
+                (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve data for ID: " + participant_id)
+                    mainCallback(err)
+                }
+                callback(null, result)
+            });
+        },
+        (result, callback) => {
+            var fetched_data = result[0];
+            const category_type = fetched_data.category_type;
+
+            if (category_type === constants.CATEGORY_TYPE.PRIMING) {
+                res.redirect('/ai-video/' + participant_id);
+            } else {
+                res.redirect('/interface-training/' + participant_id)
+            }
+            callback(null)
+        }
+    ], (err) => {
+        if (err) {
+            console.log(err)
+        }
+    });
+});
+
+app.get('/ai-video/:id', (req, res) => {
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id: req.params.id
+    }
+    
+    res.render('general_video', page_data);
+});
+
+app.get('/interface-training/:id', (req, res) => {
+    const participant_id = req.params.id;
 
     async.waterfall([
         (callback) => {
@@ -521,6 +562,9 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
     switch(exp_stage) {
         case constants.EXPERIMENT_STAGE.GEN_INFO:
             join_URL = '/registration-successful/' + participant_id;
+            break;
+        case constants.EXPERIMENT_STAGE.GEN_VIDEO:
+            join_URL = '/ai-video/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.TRAINING:
             join_URL = '/interface-training/' + participant_id;

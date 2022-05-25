@@ -1,0 +1,69 @@
+<html>
+	<head>
+		<title>Experiment Application</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/video.css">
+        
+        <script src="<%= JQUERY_URL%>"></script>
+		<script type="text/javascript" src="/lib/gen_video.js"></script>
+	</head>
+
+	<body>
+		<!-- Injecting EJS variables into JS environment -->
+		<script> 
+			var participant_id = '<%= participant_id %>';
+		</script>
+
+		<div id="header-wrapper">
+			<div id="header-content">
+				<h1>AI Video</h1>
+			</div>
+		</div> 
+		<div id="body-wrapper">
+			<div id="body-content">
+				<div class="text-box">
+					<p>Before you continue, please watch the video below on AI tools in healthcare.</p>
+				</div>
+
+				<div class="text-box">
+					<div id="player"></div>
+
+					<script>
+						    // Load IFrame Player API asynchonously
+							var tag = document.createElement('script');
+							tag.src = "https://www.youtube.com/iframe_api";
+							var firstScriptTag = document.getElementsByTagName('script')[0];
+							firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+							// Creates an <iframe> (and YouTube player) after the API code downloads
+							var player;
+							function onYouTubeIframeAPIReady() {
+								player = new YT.Player('player', {
+									height: '585',
+									width: '960',
+									videoId: 'NK1tDF3HRnM',
+									playerVars: {
+										'playsinline': 1
+									},
+									events: {
+										'onStateChange': onPlayerStateChange
+									}
+								});
+							}
+
+							function onPlayerStateChange(event) {
+								if (event.data == YT.PlayerState.ENDED) {
+									document.getElementById("continue-button-highlight").classList.add("hidden");
+								}
+							}
+					</script>
+				</div>
+				
+				<div class="button-bar">
+					<div class="filler-class" id="continue-button-highlight"></div>
+					<a href="/interface-training/<%=participant_id%>">continue</a>
+				</div>
+			</div>
+		</div>        
+	</body>
+</html>
