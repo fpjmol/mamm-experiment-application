@@ -12,8 +12,6 @@
     width: 180px;
     height: 60px;
     background-color: orange;
-
-    margin-top: 20px;
 }
 
 #submit-button:hover {
@@ -36,4 +34,8 @@
 
 form {
     margin-bottom: 0;
+}
+
+.button-bar {
+    justify-content: flex-end;
 }
