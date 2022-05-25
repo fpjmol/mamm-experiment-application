@@ -658,7 +658,7 @@ app.post("/register_participant", (req, res) => {
             participant_type = getCycledElement(category_type);
 
             // Assignment of video bool based on participant type
-            if (category_type === constants.CATEGORY_TYPE.PRIMING || participant_type === constants.PARTICIPANT_TYPE.TYPE_B) {
+            if (category_type === constants.CATEGORY_TYPE.PRIMING && participant_type === constants.PARTICIPANT_TYPE.TYPE_B) {
                 participant_video_bool = video_bool_is_pos;
                 flipVideoBool();
             }
