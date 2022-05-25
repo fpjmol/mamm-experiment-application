@@ -9,7 +9,7 @@ function initializeClassificationObject() {
     return {
         current: null,
         finished: [],
-        remaining: getRandomizedImageIDSet()
+        remaining: constants.MAMM_IMAGE_IDS
     }
 }
 
@@ -19,7 +19,7 @@ function getRandomElement(array) {
 
 // SUPPORTING FUNCTIONS ----------------------------------
 
-function getRandomizedImageIDSet() {
+function getRandomizedImageIDSet() { //Depricated to set experiment order
     available_image_ids = constants.MAMM_IMAGE_IDS;
     return shuffle(available_image_ids);
 }

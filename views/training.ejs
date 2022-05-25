@@ -197,7 +197,7 @@
 			<div id="mammogram-modal-content">
 				<div id="zoomable-container">
 					<img ondragstart="return false" class="modal_mammogram" id="mamm_img_modal" src="/img/mammograms/<%=task.mamm_file_name%>">
-					<img ondragstart="return false" class="modal_mammogram hidden" id="heatmap_img_modal" src="/img/mammograms/<%=task.heat_file_name%>">
+					<img ondragstart="return false" class="modal_mammogram hidden" id="heatmap_img_modal" src="/img/heatmaps/<%=task.heat_file_name%>">
 				</div>
 			</div>
 		</div>
@@ -214,7 +214,7 @@
 			<div id="mammograms">
 				<div class="super-highlight hidden" id="expl-mammogram-highlight"></div>
 				<img class="mammogram" id="mamm_img" src="/img/mammograms/<%=task.mamm_file_name%>">
-				<img class="mammogram hidden" id="heatmap_img" src="/img/mammograms/<%=task.heat_file_name%>">
+				<img class="mammogram hidden" id="heatmap_img" src="/img/heatmaps/<%=task.heat_file_name%>">
 			</div>
 
 			<div id="body_right">
@@ -222,8 +222,8 @@
 					<div class="super-highlight hidden" id="expl-patient-highlight"></div>
 					<div id="patient_info">
 						<h3>Patient Information</h3>
-						<p><strong>Age:</strong> 62</p>
-						<p><strong>Family History:</strong> Genetic predisposition</p>
+						<p><strong>Age: </strong><%= task.age %></p>
+						<p><strong>Genetic Predisposition: </strong><%= task.genetic_predis %></p>
 					</div>
 				</div>
 
@@ -236,7 +236,7 @@
 				<div class="info_component" id="AI_info">
 					<div class="info_content_wrapper">
 						<div class="info_content_box hidden" id="AI_info_box">
-							<p>This is where the AI info would be displayed</p>
+							<img class="AI_info_img" id="AI_info_img" src="/img/attributes/<%=task.attribute_file_name%>">
 						</div>
 					</div>
 					<div id="info-icon-wrapper">
@@ -262,7 +262,15 @@
 							<div class="info_component" id="PD_info">
 								<div class="info_content_wrapper">
 									<div class="info_content_box hidden" id="PD_info_box">
-										<p>This is where the Prob Distr info would be displayed</p>
+										<p>AI Malignancy Score:</p>
+										<%
+										var color = null;
+										if(task.ai_classification.li >= task.ai_classification.re) { 
+											color = task.ai_classification.li;
+										} else { 
+											color = task.ai_classification.re;
+										}%>
+										<p><em class="ai-suggestion-class-<%= color %>"><%=task.abnormality_score%>%</em></p>
 									</div>
 								</div>
 								<div id="info-icon-wrapper">
@@ -271,8 +279,8 @@
 								</div>
 							</div>
 						</div>	
-						<h5>Left: <em><%= task.ai_classification.li%></em></h5>
-						<h5>Right: <em><%= task.ai_classification.re%></em></h5>
+						<h5>Left: <em class="ai-suggestion-class-<%=task.ai_classification.li%>"><%= task.ai_classification.li%></em></h5>
+						<h5>Right: <em class="ai-suggestion-class-<%=task.ai_classification.re%>"><%= task.ai_classification.re%></em></h5>
 					</div>
 				</div>
 			</div>
@@ -286,7 +294,7 @@
 						<div class="info_component" id="BIRADS_info">
 							<div class="info_content_wrapper">
 								<div class="info_content_box hidden" id="BIRADS_info_box">
-									<p>This is where the birads info would be displayed</p>
+									<img class="birads_info_img" id="birads_info_img" src="/img/misc/birads_info.jpeg"> 
 								</div>
 							</div>
 							<div id="info-icon-wrapper">

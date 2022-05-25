@@ -175,10 +175,6 @@ $(() => {
 
             heatmap_image_modal.style.left = mammogram_image_modal.style.left;
             heatmap_image_modal.style.top = mammogram_image_modal.style.top;
-
-            total_visits_heatmap ++;
-            time_heatmap_start = new Date().getTime();
-            time_heatmap_end = null;
         });
 
         hide_heatmap_button_modal.addEventListener('click', () => {
@@ -196,8 +192,6 @@ $(() => {
 
             mammogram_image_modal.style.left = heatmap_image_modal.style.left;
             mammogram_image_modal.style.top = heatmap_image_modal.style.top;
-
-            total_time_heatmap += (time_heatmap_end - time_heatmap_start)
         });
     } else {
         show_heatmap_button_modal.classList.add('invisible');

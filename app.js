@@ -258,8 +258,15 @@ app.get('/interface-training/:id', (req, res) => {
         },
         (task_result, data_result, callback) => {
             fetched_data = data_result[0];
+            task_data = task_result[0];
             category_type = fetched_data.category_type;
             participant_type = fetched_data.participant_type;
+
+            if(task_data.genetic_predis === 1) { // Transforming boolean value into string
+                task_data.genetic_predis = "Yes"
+            } else {
+                task_data.genetic_predis = "No"
+            }
 
             var page_data = {
                 JQUERY_URL: constants.JQUERY_CDN_URL,
@@ -268,7 +275,7 @@ app.get('/interface-training/:id', (req, res) => {
                 participant_type,
                 PARTICIPANT_TYPES: constants.PARTICIPANT_TYPE,
                 CATEGORY_TYPES: constants.CATEGORY_TYPE,
-                task: task_result[0]
+                task: task_data
             }
 
             res.render('training', page_data)
@@ -479,6 +486,13 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
         },
         (result, classification_obj, participant_type, category_type, callback) => {
             fetched_data = result[0];
+
+            if(fetched_data.genetic_predis === 1) { // Transforming boolean value into string
+                fetched_data.genetic_predis = "Yes"
+            } else {
+                fetched_data.genetic_predis = "No"
+            }
+
             var page_data = {
                 JQUERY_URL: constants.JQUERY_CDN_URL,
                 participant_id,
