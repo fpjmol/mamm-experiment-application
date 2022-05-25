@@ -744,8 +744,9 @@ app.post("/save_task", (req, res) => {
                 total_time_prob_distr,
                 total_visits_prob_distr,
                 total_time_contr_attr,
-                total_visits_contr_attr
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                total_visits_contr_attr,
+                total_time_open_heatmap
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting classification measurements...")
             db.query(query, [
@@ -763,7 +764,8 @@ app.post("/save_task", (req, res) => {
                 req.body.total_time_prob_distr,
                 req.body.total_visits_prob_distr,
                 req.body.total_time_contr_attr,
-                req.body.total_visits_contr_attr
+                req.body.total_visits_contr_attr,
+                req.body.total_time_open_heatmap
             ], 
             (err, result) => {
                 if (err) {

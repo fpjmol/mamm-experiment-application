@@ -21,6 +21,9 @@ $(() => {
 
     if (participant_type !== PARTICIPANT_TYPES.TYPE_C || category_type === CATEGORY_TYPES.PRIMING) { // Only exists for type A & B participants (or Priming group)
         var total_time_heatmap = 0;
+        var total_time_open_heatmap = 0;
+        var time_heatmap_open_end = null;
+        var is_first_heatmap_open = true;
         var time_heatmap_start = null;
         var time_heatmap_end = null;
         var total_visits_heatmap = 0;
@@ -169,6 +172,11 @@ $(() => {
         var heatmap_image_modal = document.getElementById("heatmap_img_modal");
 
         show_heatmap_button_modal.addEventListener('click', () => {
+            if(is_first_heatmap_open) {
+                time_heatmap_open_end = new Date().getTime();
+                is_first_heatmap_open = false;
+            }
+
             show_heatmap_button_modal.classList.add('hidden');
             show_heatmap_button.classList.add('hidden');
             hide_heatmap_button_modal.classList.remove('hidden');
@@ -223,6 +231,11 @@ $(() => {
         var heatmap_image_modal = document.getElementById("heatmap_img_modal");
 
         show_heatmap_button.addEventListener('click', () => {
+            if(is_first_heatmap_open) {
+                time_heatmap_open_end = new Date().getTime();
+                is_first_heatmap_open = false;
+            }
+
             show_heatmap_button.classList.add('hidden');
             show_heatmap_button_modal.classList.add('hidden');
             hide_heatmap_button.classList.remove('hidden');
@@ -424,6 +437,9 @@ $(() => {
                 total_time_heatmap += (time_heatmap_end - time_heatmap_start)
             }
 
+            total_time_open_heatmap = time_heatmap_open_end - TASK_START_TIME;
+
+            measured_data.total_time_open_heatmap = total_time_open_heatmap;
             measured_data.total_time_heatmap = total_time_heatmap;
             measured_data.total_visits_heatmap = total_visits_heatmap;
         }
