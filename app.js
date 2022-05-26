@@ -7,11 +7,13 @@ const constants = require('./constants')
 const utils = require('./utils')
 const favicon = require('serve-favicon')
 var cors = require('cors')
+var device = require('express-device')
 var SimpleCrypto = require("simple-crypto-js").default
 
 const app = express();
 
 app.use(favicon(__dirname + '/static/img/favicon.ico'))
+app.use(device.capture())
 app.use(cookieParser())
 app.use(cors())
 
@@ -153,6 +155,18 @@ app.use(express.json())
 
 
 // Routing ------------------------------------------------------
+
+app.all('/*', (req, res, next) => {
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    if (req.device.type === "desktop") {
+        next()
+    } else {
+        res.render('mobile', page_data);
+    }
+});
 
 app.get('/', (req, res) => {
     var page_data = {
