@@ -145,7 +145,18 @@
                         
                         <div class="text-box" id="post_prob_distr_usefulness_textbox">
                             <div class="form-element-wrapper radio-element">
-                                <label class="radio-label" for="post_prob_distr_usefulness">How useful was the AI's <b>Probability Distribution</b> information for you during the experiment?</label>
+                                <div class="label-wrapper">
+                                    <label class="radio-label" for="post_prob_distr_usefulness">How useful was the AI's <b>Malignancy Score</b> information for you during the experiment?</label>
+                                    <div class="info_component" id="PD_info">
+                                        <div class="info_content_wrapper">
+                                            <div class="info_content_box hidden" id="PD_info_box">
+                                                <p>AI Malignancy Score:</p>
+                                                <p><em class="ai-suggestion-class-4">89%</em></p>
+                                            </div>
+                                        </div>
+                                        <img class="info_icon" id="show_PD_info" src="/img/misc/info.png">
+                                    </div>
+                                </div>
                                 <div class="radio-element-wrapper">
                                     <div class="radio-button">
                                         <input type="radio" id="post_prob_distr_usefulness_1" name="post_prob_distr_usefulness" value="very_useless" required>
@@ -181,7 +192,17 @@
 
                         <div class="text-box" id="post_contr_attr_usefulness_textbox">
                             <div class="form-element-wrapper radio-element">
-                                <label class="radio-label" for="post_contr_attr_usefulness">How useful was the AI's <b>Attribute</b> information for you during the experiment?</label>
+                                <div class="label-wrapper">
+                                    <label class="radio-label" for="post_contr_attr_usefulness">How useful was the AI's <b>Attribute</b> information for you during the experiment?</label>
+                                    <div class="info_component" id="AI_info">
+                                        <div class="info_content_wrapper">
+                                            <div class="info_content_box hidden" id="AI_info_box">
+                                                <img class="AI_info_img" id="AI_info_img" src="/img/attributes/5450931_contr_final.png">
+                                            </div>
+                                        </div>
+                                        <img class="info_icon" id="show_AI_info" src="/img/misc/info.png">
+                                    </div>
+                                </div>
                                 <div class="radio-element-wrapper">
                                     <div class="radio-button">
                                         <input type="radio" id="post_contr_attr_usefulness_1" name="post_contr_attr_usefulness" value="very_useful" required>

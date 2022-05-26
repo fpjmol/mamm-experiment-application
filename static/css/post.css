@@ -7,34 +7,12 @@
     margin-bottom: 1%;
 }
 
-#post-submit-button {
-    border:none;
-    color: black;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 180px;
-    height: 85px;
-    background-color: orange;
-
-    margin-top: 20px;
-    margin-bottom: 50px;
-}
-
-#post-submit-button:hover {
-    cursor: pointer;
-    color:rgba(255,255,255,0.8);
-    box-shadow: inset 0 0 10px rgb(100,100,100);
-}
-
 #post_ai_trust_textbox {
     margin-top: 1%;
 }
+
+
+/* FORM ELEMENTS ----------------------------------------------- */
 
 .form-element-wrapper {
     width: calc(100% - 60px);
@@ -85,6 +63,104 @@
 
 .radio-button {
     width: 150px;
+}
+
+
+/* HOVER MODAL ELEMENTS ---------------------------------------- */
+
+.label-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.info_content_wrapper {
+    position:relative;
+}
+
+.info_content_box {
+    position:absolute;
+    background-color: azure;
+    color: black;
+}
+
+.info_icon {
+    height: 30px;
+    width: 30px;
+    margin-left: 20px;
+}
+
+#PD_info .info_content_box{
+    top: -100px;
+    left: -50px;
+    width: 250px;
+    height: 100px;
+    padding: 0px 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#PD_info .info_content_box p {
+    font-weight: 800;
+}
+
+#PD_info .info_content_box p em {
+    font-style:normal;
+    font-family: Raleway;
+    letter-spacing: 2px;
+    font-size: 30px;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px black;
+}
+
+.text-box .info_content_box p {
+    margin: 0;
+    padding: 0;
+}
+
+#AI_info .info_content_box {
+    bottom: 0px;
+    left: -250px;
+    width: 565px;
+    height: 528px;
+}
+
+#AI_info_img {
+    width: 565px;
+    height: 528px;
+}
+
+.ai-suggestion-class-4 {
+    color: rgb(255, 72, 0) !important;
+}
+
+
+/* BOTTOM ELEMENTS -- BUTTON -- RECEIVE UPDATE ----------------- */
+
+#post-submit-button {
+    border:none;
+    color: black;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 180px;
+    height: 85px;
+    background-color: orange;
+
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+#post-submit-button:hover {
+    cursor: pointer;
+    color:rgba(255,255,255,0.8);
+    box-shadow: inset 0 0 10px rgb(100,100,100);
 }
 
 #receive_update {
