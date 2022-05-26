@@ -413,7 +413,9 @@ $(() => {
         }
 
         // Offset total_birads_class_changes by 1 to control for left-right picks:
-        total_birads_class_changes -= 1;
+        if (total_birads_class_changes > 0) {
+            total_birads_class_changes -= 1;
+        }
 
         // Preparing measurement data
         var measured_data = {
