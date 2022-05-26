@@ -47,6 +47,7 @@ const db = mysql.createConnection({
 })
 
 
+
 // Supporting Variables -----------------------------------------
 
 var p_type_determinant = {
@@ -443,7 +444,7 @@ app.get('/experiment-start/:id', (req, res) => {
     res.render('experiment_start', page_data);
 });
 
-app.get('/video/:participant_id/:video_id/:uri_data', (req, res) => {
+app.get('/video/:participant_id/:video_id/:uri_data', cors(), (req, res) => {
     const video_id = req.params.video_id
     const uri_data = req.params.uri_data
 
@@ -471,6 +472,7 @@ app.get('/video/:participant_id/:video_id/:uri_data', (req, res) => {
         video_link
     }
 
+    res.cookie('cross-origin','whatever', {Domain: 'https://www.aparat.com'});
     res.render('video', page_data);
 });
 
