@@ -437,7 +437,9 @@ $(() => {
                 total_time_heatmap += (time_heatmap_end - time_heatmap_start)
             }
 
-            total_time_open_heatmap = time_heatmap_open_end - TASK_START_TIME;
+            if (total_visits_heatmap != 0) {
+                total_time_open_heatmap = time_heatmap_open_end - TASK_START_TIME;
+            }
 
             measured_data.total_time_open_heatmap = total_time_open_heatmap;
             measured_data.total_time_heatmap = total_time_heatmap;
