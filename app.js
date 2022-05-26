@@ -7,11 +7,13 @@ const constants = require('./constants')
 const utils = require('./utils')
 const favicon = require('serve-favicon')
 var cors = require('cors')
+var device = require('express-device')
 var SimpleCrypto = require("simple-crypto-js").default
 
 const app = express();
 
 app.use(favicon(__dirname + '/static/img/favicon.ico'))
+app.use(device.capture())
 app.use(cookieParser())
 app.use(cors())
 
@@ -155,6 +157,18 @@ app.use(express.json())
 
 // Routing ------------------------------------------------------
 
+app.all('/*', (req, res, next) => {
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL
+    }
+
+    if (req.device.type === "desktop") {
+        next()
+    } else {
+        res.render('mobile', page_data);
+    }
+});
+
 app.get('/', (req, res) => {
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL
@@ -180,17 +194,136 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/registration-successful/:id', (req, res) => {
+    const participant_id = req.params.id;
+
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id: req.params.id
+        participant_id
     }
+
+    async.waterfall([ // Implemented to prevent loss of progress on browser "navigate back" function
+        (callback) => {
+            db.query('SELECT exp_stage FROM participants WHERE email = ?', 
+            [participant_id], 
+            (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve stage for ID: " + participant_id)
+                    callback(err)
+                } else if (result.length === 0) {
+                    callback({ error: "This email does not seem to be registered. Please register a valid email to continue."})
+                    console.log(`Nav Back attempt with ID: ${participant_id}. This ID was not found in existing entries.`)
+                } else {
+                    console.log(`Nav Back successful for ID: ${participant_id}`)
+                    callback(null, result)
+                }
+            });
+        },
+        (result, callback) => {
+            const fetched_data = result[0];
+
+            if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_START) {
+                res.redirect('/experiment-start/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_TASKS) {
+                res.redirect('/experiment/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_END) {
+                res.redirect('/experiment-end')
+            } else {
+                res.render('generic_info', page_data);
+            }
+            callback(null);
+        }
+    ], (err) => {
+        if (err) {
+            console.log(`Something went wrong when user ${participant_id} tried to navigate back...`);
+            console.log(err)
+        }
+    });
+});
+
+app.get('/routing/:id', (req, res) => {
+    const participant_id = req.params.id;
+
+    async.waterfall([
+        (callback) => {
+            db.query('SELECT category_type FROM participants WHERE email  = ?', 
+            [participant_id], 
+                (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve data for ID: " + participant_id)
+                    mainCallback(err)
+                }
+                callback(null, result)
+            });
+        },
+        (result, callback) => {
+            var fetched_data = result[0];
+            const category_type = fetched_data.category_type;
+
+            if (category_type === constants.CATEGORY_TYPE.PRIMING) {
+                res.redirect('/ai-video/' + participant_id);
+            } else {
+                res.redirect('/interface-training/' + participant_id)
+            }
+            callback(null)
+        }
+    ], (err) => {
+        if (err) {
+            console.log(err)
+        }
+    });
+});
+
+app.get('/ai-video/:id', (req, res) => {
+    const participant_id= req.params.id;
     
-    res.render('generic_info', page_data);
+    var page_data = {
+        JQUERY_URL: constants.JQUERY_CDN_URL,
+        participant_id
+    }
+
+    async.waterfall([ // Implemented to prevent loss of progress on browser "navigate back" function
+        (callback) => {
+            db.query('SELECT exp_stage FROM participants WHERE email = ?', 
+            [participant_id], 
+            (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve stage for ID: " + participant_id)
+                    callback(err)
+                } else if (result.length === 0) {
+                    callback({ error: "This email does not seem to be registered. Please register a valid email to continue."})
+                    console.log(`Nav Back attempt with ID: ${participant_id}. This ID was not found in existing entries.`)
+                } else {
+                    console.log(`Nav Back successful for ID: ${participant_id}`)
+                    callback(null, result)
+                }
+            });
+        },
+        (result, callback) => {
+            const fetched_data = result[0];
+
+            if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.TRAINING) {
+                res.redirect('/interface-training/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_START) {
+                res.redirect('/experiment-start/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_TASKS) {
+                res.redirect('/experiment/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_END) {
+                res.redirect('/experiment-end')
+            } else {
+                res.render('general_video', page_data);
+            }
+            callback(null);
+        }
+    ], (err) => {
+        if (err) {
+            console.log(`Something went wrong when user ${participant_id} tried to navigate back...`);
+            console.log(err)
+        }
+    });
 });
 
 app.get('/interface-training/:id', (req, res) => {
     const participant_id = req.params.id;
-
 
     async.waterfall([
         (callback) => {
@@ -218,8 +351,15 @@ app.get('/interface-training/:id', (req, res) => {
         },
         (task_result, data_result, callback) => {
             fetched_data = data_result[0];
+            task_data = task_result[0];
             category_type = fetched_data.category_type;
             participant_type = fetched_data.participant_type;
+
+            if(task_data.genetic_predis === 1) { // Transforming boolean value into string
+                task_data.genetic_predis = "Yes"
+            } else {
+                task_data.genetic_predis = "No"
+            }
 
             var page_data = {
                 JQUERY_URL: constants.JQUERY_CDN_URL,
@@ -228,7 +368,7 @@ app.get('/interface-training/:id', (req, res) => {
                 participant_type,
                 PARTICIPANT_TYPES: constants.PARTICIPANT_TYPE,
                 CATEGORY_TYPES: constants.CATEGORY_TYPE,
-                task: task_result[0]
+                task: task_data
             }
 
             res.render('training', page_data)
@@ -440,6 +580,13 @@ app.get('/experiment/:participant_id/task/:task_id', (req, res) => {
         },
         (result, classification_obj, participant_type, category_type, callback) => {
             fetched_data = result[0];
+
+            if(fetched_data.genetic_predis === 1) { // Transforming boolean value into string
+                fetched_data.genetic_predis = "Yes"
+            } else {
+                fetched_data.genetic_predis = "No"
+            }
+
             var page_data = {
                 JQUERY_URL: constants.JQUERY_CDN_URL,
                 participant_id,
@@ -524,6 +671,9 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
         case constants.EXPERIMENT_STAGE.GEN_INFO:
             join_URL = '/registration-successful/' + participant_id;
             break;
+        case constants.EXPERIMENT_STAGE.GEN_VIDEO:
+            join_URL = '/ai-video/' + participant_id;
+            break;
         case constants.EXPERIMENT_STAGE.TRAINING:
             join_URL = '/interface-training/' + participant_id;
             break;
@@ -602,7 +752,7 @@ app.post("/register_participant", (req, res) => {
             participant_type = getCycledElement(category_type);
 
             // Assignment of video bool based on participant type
-            if (category_type === constants.CATEGORY_TYPE.PRIMING || participant_type === constants.PARTICIPANT_TYPE.TYPE_B) {
+            if (category_type === constants.CATEGORY_TYPE.PRIMING && participant_type === constants.PARTICIPANT_TYPE.TYPE_B) {
                 participant_video_bool = video_bool_is_pos;
                 flipVideoBool();
             }
@@ -688,8 +838,9 @@ app.post("/save_task", (req, res) => {
                 total_time_prob_distr,
                 total_visits_prob_distr,
                 total_time_contr_attr,
-                total_visits_contr_attr
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                total_visits_contr_attr,
+                total_time_open_heatmap
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             
             console.log("Posting classification measurements...")
             db.query(query, [
@@ -707,7 +858,8 @@ app.post("/save_task", (req, res) => {
                 req.body.total_time_prob_distr,
                 req.body.total_visits_prob_distr,
                 req.body.total_time_contr_attr,
-                req.body.total_visits_contr_attr
+                req.body.total_visits_contr_attr,
+                req.body.total_time_open_heatmap
             ], 
             (err, result) => {
                 if (err) {

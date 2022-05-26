@@ -37,6 +37,22 @@ button:hover {
     cursor: pointer;
 }
 
+.ai-suggestion-class-2 {
+    color: rgb(1, 236, 21) !important;
+}
+
+.ai-suggestion-class-3 {
+    color: rgb(255, 238, 0) !important;
+}
+
+.ai-suggestion-class-4 {
+    color: rgb(255, 72, 0) !important;
+}
+
+.ai-suggestion-class-5 {
+    color: rgb(255, 40, 40) !important;
+}
+
 /* BODY COMPONENTS --------------------------- */
 
 #body {
@@ -49,7 +65,7 @@ button:hover {
 
 #task_counter {
     margin-left: 2%;
-    width: 100px;
+    width: 180px;
     font-size: 50px;
     font-weight: bold;
 }
@@ -83,7 +99,7 @@ button:hover {
 }
 
 .heatmap_button {
-    width: 50%;
+    width: 150px;
     height: 100px;
     font-size: 30px;
     margin-left: 10%;
@@ -95,10 +111,14 @@ button:hover {
 
 #AI_info .info_content_box {
     top: -300px;
-    left: -100px;
-    width: 250px;
-    height: 300px;
-    padding: 0px 5px;
+    left: -565px;
+    width: 565px;
+    height: 528px;
+}
+
+#AI_info_img {
+    width: 565px;
+    height: 528px;
 }
 
 
@@ -230,12 +250,34 @@ button:hover {
 }
 
 #PD_info .info_content_box{
-    top: -300px;
-    left: 30px;
+    top: -100px;
+    left: -50px;
     width: 250px;
-    height: 300px;
+    height: 100px;
     padding: 0px 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
 }
+
+#PD_info .info_content_box p {
+    font-weight: 800;
+}
+
+#PD_info .info_content_box p em {
+    font-style:normal;
+    font-family: Raleway;
+    letter-spacing: 2px;
+    font-size: 30px;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px black;
+}
+
+.info_content_box p {
+    margin: 0;
+}
+
 
 /* Menu Mid ------------------ */
 
@@ -270,11 +312,15 @@ button:hover {
 }
 
 #BIRADS_info .info_content_box {
-    top: -300px;
-    left: -100px;
-    width: 250px;
-    height: 300px;
-    padding: 0px 5px;
+    top: -541px;
+    left: -321px;
+    width: 643px;
+    height: 541px;
+}
+
+#birads_info_img {
+    width: 643px;
+    height: 541px;
 }
 
 #birads_classification_form {
@@ -329,4 +375,33 @@ button:hover {
     font-size: 30px;
     height: 50%;
     width: 50%;
+}
+
+
+/* RESPONSIVENESS FUNTIONS ------------------ */
+
+@media only screen and (max-height: 930px) {  
+    
+    #classification_title_wrapper h4 {
+        font-size: 25px;
+    }
+
+    .birads_class_row {
+        margin: 5px 0;
+    }
+
+    .birads_class_row h5 {
+        margin: 10px 0;
+        font-size: 15px;
+    }
+    
+    .radio-button label {
+        font-size: 15px;
+        margin-top: 3px;
+    }
+    
+    .radio-button input[type=radio] {
+        height: 20px;
+        width: 20px;
+    }
 }
