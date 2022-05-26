@@ -28,22 +28,22 @@ const mysql = require('mysql2');
 //     database: 'experimentdatadb'
 // })
 
-// SETTINGS FOR IRAN DB:
+// SETTINGS FOR HEROKU DB:
 
 // const db = mysql.createConnection({
-//     user: 'experiment',
-//     host: '157.90.192.179:3031',
-//     password: 'CrChb_VWA20gh09dlTGeO',
-//     database: 'db_experiment'
+//     user: 'emr0lxlhgjmxblcg',
+//     host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+//     password: 'tyma6eiq0w7i3fna',
+//     database: 'cg511cow0to6am6v'
 // })
 
 // SETTINGS FOR HEROKU DB:
 
 const db = mysql.createConnection({
-    user: 'emr0lxlhgjmxblcg',
-    host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-    password: 'tyma6eiq0w7i3fna',
-    database: 'cg511cow0to6am6v'
+    user: 'experiment',
+    host: 'localhost',
+    password: 'CrChb_VWA20gh09dlTGeO',
+    database: 'db_experiment'
 })
 
 
