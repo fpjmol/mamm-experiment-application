@@ -193,12 +193,50 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/registration-successful/:id', (req, res) => {
+    const participant_id = req.params.id;
+
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id: req.params.id
+        participant_id
     }
-    
-    res.render('generic_info', page_data);
+
+    async.waterfall([ // Implemented to prevent loss of progress on browser "navigate back" function
+        (callback) => {
+            db.query('SELECT exp_stage FROM participants WHERE email = ?', 
+            [participant_id], 
+            (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve stage for ID: " + participant_id)
+                    callback(err)
+                } else if (result.length === 0) {
+                    callback({ error: "This email does not seem to be registered. Please register a valid email to continue."})
+                    console.log(`Nav Back attempt with ID: ${participant_id}. This ID was not found in existing entries.`)
+                } else {
+                    console.log(`Nav Back successful for ID: ${participant_id}`)
+                    callback(null, result)
+                }
+            });
+        },
+        (result, callback) => {
+            const fetched_data = result[0];
+
+            if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_START) {
+                res.redirect('/experiment-start/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_TASKS) {
+                res.redirect('/experiment/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_END) {
+                res.redirect('/experiment-end')
+            } else {
+                res.render('generic_info', page_data);
+            }
+            callback(null);
+        }
+    ], (err) => {
+        if (err) {
+            console.log(`Something went wrong when user ${participant_id} tried to navigate back...`);
+            console.log(err)
+        }
+    });
 });
 
 app.get('/routing/:id', (req, res) => {
@@ -235,12 +273,52 @@ app.get('/routing/:id', (req, res) => {
 });
 
 app.get('/ai-video/:id', (req, res) => {
+    const participant_id= req.params.id;
+    
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id: req.params.id
+        participant_id
     }
-    
-    res.render('general_video', page_data);
+
+    async.waterfall([ // Implemented to prevent loss of progress on browser "navigate back" function
+        (callback) => {
+            db.query('SELECT exp_stage FROM participants WHERE email = ?', 
+            [participant_id], 
+            (err, result) => {
+                if (err) {
+                    console.log("Failed to retrieve stage for ID: " + participant_id)
+                    callback(err)
+                } else if (result.length === 0) {
+                    callback({ error: "This email does not seem to be registered. Please register a valid email to continue."})
+                    console.log(`Nav Back attempt with ID: ${participant_id}. This ID was not found in existing entries.`)
+                } else {
+                    console.log(`Nav Back successful for ID: ${participant_id}`)
+                    callback(null, result)
+                }
+            });
+        },
+        (result, callback) => {
+            const fetched_data = result[0];
+
+            if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.TRAINING) {
+                res.redirect('/interface-training/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_START) {
+                res.redirect('/experiment-start/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_TASKS) {
+                res.redirect('/experiment/' + participant_id);
+            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_END) {
+                res.redirect('/experiment-end')
+            } else {
+                res.render('general_video', page_data);
+            }
+            callback(null);
+        }
+    ], (err) => {
+        if (err) {
+            console.log(`Something went wrong when user ${participant_id} tried to navigate back...`);
+            console.log(err)
+        }
+    });
 });
 
 app.get('/interface-training/:id', (req, res) => {
