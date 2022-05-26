@@ -30,21 +30,21 @@ const mysql = require('mysql2');
 
 // SETTINGS FOR HEROKU DB:
 
-// const db = mysql.createConnection({
-//     user: 'emr0lxlhgjmxblcg',
-//     host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-//     password: 'tyma6eiq0w7i3fna',
-//     database: 'cg511cow0to6am6v'
-// })
+const db = mysql.createConnection({
+    user: 'emr0lxlhgjmxblcg',
+    host: 'clwxydcjair55xn0.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+    password: 'tyma6eiq0w7i3fna',
+    database: 'cg511cow0to6am6v'
+})
 
 // SETTINGS FOR HEROKU DB:
 
-const db = mysql.createConnection({
-    user: 'experiment',
-    host: 'localhost',
-    password: 'CrChb_VWA20gh09dlTGeO',
-    database: 'db_experiment'
-})
+// const db = mysql.createConnection({
+//     user: 'experiment',
+//     host: 'localhost',
+//     password: 'CrChb_VWA20gh09dlTGeO',
+//     database: 'db_experiment'
+// })
 
 
 
@@ -201,43 +201,7 @@ app.get('/registration-successful/:id', (req, res) => {
         participant_id
     }
 
-    async.waterfall([ // Implemented to prevent loss of progress on browser "navigate back" function
-        (callback) => {
-            db.query('SELECT exp_stage FROM participants WHERE email = ?', 
-            [participant_id], 
-            (err, result) => {
-                if (err) {
-                    console.log("Failed to retrieve stage for ID: " + participant_id)
-                    callback(err)
-                } else if (result.length === 0) {
-                    callback({ error: "This email does not seem to be registered. Please register a valid email to continue."})
-                    console.log(`Nav Back attempt with ID: ${participant_id}. This ID was not found in existing entries.`)
-                } else {
-                    console.log(`Nav Back successful for ID: ${participant_id}`)
-                    callback(null, result)
-                }
-            });
-        },
-        (result, callback) => {
-            const fetched_data = result[0];
-
-            if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_START) {
-                res.redirect('/experiment-start/' + participant_id);
-            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_TASKS) {
-                res.redirect('/experiment/' + participant_id);
-            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_END) {
-                res.redirect('/experiment-end')
-            } else {
-                res.render('generic_info', page_data);
-            }
-            callback(null);
-        }
-    ], (err) => {
-        if (err) {
-            console.log(`Something went wrong when user ${participant_id} tried to navigate back...`);
-            console.log(err)
-        }
-    });
+    res.render('generic_info', page_data);
 });
 
 app.get('/routing/:id', (req, res) => {
@@ -278,48 +242,11 @@ app.get('/ai-video/:id', (req, res) => {
     
     var page_data = {
         JQUERY_URL: constants.JQUERY_CDN_URL,
-        participant_id
+        participant_id,
+        EXPERIMENT_STAGE: constants.EXPERIMENT_STAGE
     }
 
-    async.waterfall([ // Implemented to prevent loss of progress on browser "navigate back" function
-        (callback) => {
-            db.query('SELECT exp_stage FROM participants WHERE email = ?', 
-            [participant_id], 
-            (err, result) => {
-                if (err) {
-                    console.log("Failed to retrieve stage for ID: " + participant_id)
-                    callback(err)
-                } else if (result.length === 0) {
-                    callback({ error: "This email does not seem to be registered. Please register a valid email to continue."})
-                    console.log(`Nav Back attempt with ID: ${participant_id}. This ID was not found in existing entries.`)
-                } else {
-                    console.log(`Nav Back successful for ID: ${participant_id}`)
-                    callback(null, result)
-                }
-            });
-        },
-        (result, callback) => {
-            const fetched_data = result[0];
-
-            if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.TRAINING) {
-                res.redirect('/interface-training/' + participant_id);
-            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_START) {
-                res.redirect('/experiment-start/' + participant_id);
-            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_TASKS) {
-                res.redirect('/experiment/' + participant_id);
-            } else if (fetched_data.exp_stage === constants.EXPERIMENT_STAGE.EXP_END) {
-                res.redirect('/experiment-end')
-            } else {
-                res.render('general_video', page_data);
-            }
-            callback(null);
-        }
-    ], (err) => {
-        if (err) {
-            console.log(`Something went wrong when user ${participant_id} tried to navigate back...`);
-            console.log(err)
-        }
-    });
+    res.render('general_video', page_data);
 });
 
 app.get('/interface-training/:id', (req, res) => {
@@ -474,6 +401,7 @@ app.get('/video/:participant_id/:video_id/:uri_data', cors(), (req, res) => {
 
     res.cookie('cross-origin','whatever', {Domain: 'https://www.aparat.com'});
     res.render('video', page_data);
+
 });
 
 app.get('/experiment/:id', (req, res) => {
@@ -678,8 +606,7 @@ app.get('/join/:id/:stage/:type', (req, res) => { // Handles rejoining experimen
             join_URL = '/interface-training/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.PRIME_VIDEO:
-            const video_id = constants.VIDEO_SUFFIX[participant_type];
-            join_URL = '/video/' + participant_id + '/'+ video_id;
+            join_URL = '/pre-experiment/' + participant_id;
             break;
         case constants.EXPERIMENT_STAGE.EXP_START:
             join_URL = '/experiment-start/' + participant_id;
