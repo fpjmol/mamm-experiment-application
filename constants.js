@@ -21,7 +21,7 @@ module.exports = {
         "b3TR298yuBn": "Fgblj",
         "b3TR298yuBp": "HZf8B",
         "c62uiX55nC": "VKWXu"
-    },    
+    },
 
     EXPERIMENT_STAGE: {
         GEN_INFO: "gen_info",
