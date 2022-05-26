@@ -8,6 +8,11 @@
 		<script type="text/javascript" src="/lib/gen_info.js"></script>
 	</head>
 
+	<!-- Injecting EJS variables into JS environment -->
+	<script> 
+		var participant_id = '<%= participant_id %>';
+	</script>
+
 	<body>
 		<div id="header-wrapper">
 			<div id="header-content">
@@ -25,7 +30,7 @@
 					<p>Press <b>CONTINUE</b> to advance with the experiment.</p>
 				</div>
 				<div class="button-bar">
-					<a href="/routing/<%=participant_id%>">continue</a>
+					<button class="nav-button" id="nav-button">continue</button>
 				</div>			
 			</div>
 		</div>        
