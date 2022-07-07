@@ -411,6 +411,11 @@ button:hover {
     width: 300px;
 }
 
+#expl-zoom { /* This explains zoom/pan modal */
+    z-index: 60 !important;
+    top: 100px;
+}
+
 #expl-start {
     position: static !important;
     width: 600px;
