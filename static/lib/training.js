@@ -6,6 +6,8 @@ $(() => {
     const INFO_DISPLAY_TIME = 10000 // in ms
     const TRAINING_START_TIME = new Date().getTime();
 
+    var has_zoom_modal_opened = false;
+    var is_zoom_expl_active = false;
 
     // UPDATING EXPERIMENT STAGE: ---------------------------------------------
 
@@ -55,6 +57,24 @@ $(() => {
 
     document.getElementById("mamm_img").addEventListener('click', () => {
         mamm_modal.classList.remove('hidden');
+        
+        if (!has_zoom_modal_opened) {
+            has_zoom_modal_opened = true;
+            is_zoom_expl_active = true;
+
+            cycleToNextExplanationModal({
+                current_modal_object: document.getElementById('expl-mammogram'),
+                current_target_object: document.getElementById('mamm_img'),
+                current_highlight: document.getElementById('expl-mammogram-highlight'),
+                current_highlight_class: 'highlighted-blue',
+                current_modal_name: 'expl-mammogram',
+                next_modal_object: document.getElementById('expl-zoom'),
+                next_target_object: null,
+                next_highlight: null,
+                next_highlight_class: null,
+                target_type_is_button: false
+            }, null);
+        }
     });
 
     document.getElementById("heatmap_img").addEventListener('click', () => {
@@ -63,6 +83,23 @@ $(() => {
 
     document.getElementById("mammogram-modal-close").addEventListener('click', () => {
         mamm_modal.classList.add('hidden');
+        
+        if (is_zoom_expl_active) { // Exception to account for first modal close 
+            is_zoom_expl_active = false;
+
+            cycleToNextExplanationModal({
+                current_modal_object: document.getElementById('expl-zoom'),
+                current_target_object: null,
+                current_highlight: null,
+                current_highlight_class: null,
+                current_modal_name: 'expl-zoom',
+                next_modal_object: document.getElementById('expl-AI'),
+                next_target_object: document.getElementById('show_AI_button'),
+                next_highlight: document.getElementById('expl-AI-highlight'),
+                next_highlight_class: 'highlighted-blue',
+                target_type_is_button: true
+            }, null);
+        }
     });
 
     // HANDLING ZOOMING ===========================
@@ -429,6 +466,24 @@ $(() => {
         }
     }
     
+
+    // Exception Events for Zoom/Pan modal ===============
+    document.getElementById("expl-mammogram-close").addEventListener('click', () => {
+        mamm_modal.classList.remove('hidden');
+    });
+
+    document.getElementById("expl-mammogram-continue").addEventListener('click', () => {
+        mamm_modal.classList.remove('hidden');
+    });
+
+    document.getElementById("expl-zoom-close").addEventListener('click', () => {
+        mamm_modal.classList.add('hidden');
+    });
+
+    document.getElementById("expl-zoom-continue").addEventListener('click', () => {
+        mamm_modal.classList.add('hidden');
+    });
+
     // expl-start modal to expl-mammogram =================
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-start-super'),
@@ -443,13 +498,27 @@ $(() => {
         target_type_is_button: false
     });
 
-    // expl-start modal to expl-AI modal ==================
+    // expl-mammogram modal to expl-zoom modal ==================
     setModalEventListeners({
         current_modal_object: document.getElementById('expl-mammogram'),
         current_target_object: document.getElementById('mamm_img'),
         current_highlight: document.getElementById('expl-mammogram-highlight'),
         current_highlight_class: 'highlighted-blue',
         current_modal_name: 'expl-mammogram',
+        next_modal_object: document.getElementById('expl-zoom'),
+        next_target_object: null,
+        next_highlight: null,
+        next_highlight_class: null,
+        target_type_is_button: false
+    });
+
+    // expl-zoom modal to expl-AI modal ==================
+    setModalEventListeners({
+        current_modal_object: document.getElementById('expl-zoom'),
+        current_target_object: null,
+        current_highlight: null,
+        current_highlight_class: null,
+        current_modal_name: 'expl-zoom',
         next_modal_object: document.getElementById('expl-AI'),
         next_target_object: document.getElementById('show_AI_button'),
         next_highlight: document.getElementById('expl-AI-highlight'),
