@@ -21,8 +21,12 @@ const mysql = require('mysql2');
 
 // SETTINGS FOR IRAN DB:
 
-const db = mysql.createConnection(process.env.DB_URL);
-
+const db = mysql.createConnection({
+    user: 'experiment',
+    host: 'localhost',
+    password: 'CrChb_VWA20gh09dlTGeO',
+    database: 'db_experiment'
+})
 
 
 // Supporting Variables -----------------------------------------
